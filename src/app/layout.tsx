@@ -1,3 +1,5 @@
+import AuthSession from "@/components/providers/session-provider";
+import LoginButton from "@/components/login-button";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -28,7 +30,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+         
+        <AuthSession>
+                    
+          <div className="h-[48px] bg-black flex items-center">
+                          
+            <ul className="ml-auto mr-5">
+                                {" "}
+              <li>
+                <LoginButton></LoginButton>
+              </li>
+                            
+            </ul>
+                      
+          </div>
+                  {children}
+                
+        </AuthSession>
       </body>
     </html>
   );
