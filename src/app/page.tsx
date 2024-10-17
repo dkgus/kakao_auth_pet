@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map } from "react-kakao-maps-sdk";
+//MapMarker
 
 export default function Home() {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
@@ -18,7 +19,11 @@ export default function Home() {
     script.addEventListener("load", () => {
       setScriptLoad(true);
     });
-  }, []);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [apiKey]);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
