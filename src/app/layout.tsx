@@ -2,6 +2,7 @@ import AuthSession from "@/components/providers/session-provider";
 import LoginButton from "@/components/login-button";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+// import Script from "next/script";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -48,6 +49,11 @@ export default function RootLayout({
                 
         </AuthSession>
       </body>
+      {/* <Script src="https://developers.kakao.com/sdk/js/kakao.js" async />
+      <Script
+        type="text/javascript"
+        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_API_KEY}&autoload=false&libraries=services`}
+      /> */}
     </html>
   );
 }

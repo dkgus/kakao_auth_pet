@@ -1,19 +1,39 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 
 export default function Home() {
+  const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
+
+  const [scriptLoad, setScriptLoad] = useState<boolean>(false);
+
+  useEffect(() => {
+    const script: HTMLScriptElement = document.createElement("script");
+    script.async = true;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;
+    document.head.appendChild(script);
+
+    script.addEventListener("load", () => {
+      setScriptLoad(true);
+    });
+  }, []);
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        {/* <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        /> */}
-        <div className="mt-10 text-blue-600/100">123</div>
-        <input placeholder="입력"></input>
+        <div>
+          {scriptLoad ? (
+            <Map
+              center={{ lat: 33.5563, lng: 126.79581 }}
+              style={{ width: "800px", height: "600px" }}
+              level={3}
+            ></Map>
+          ) : (
+            <div></div>
+          )}
+        </div>
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
             Get started by editing{" "}
