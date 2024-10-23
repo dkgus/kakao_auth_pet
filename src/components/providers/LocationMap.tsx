@@ -5,7 +5,7 @@ import { getAxiosData, postAxiosData } from "@/lib/axiosData";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { weatherTitle } from "@/lib/utils";
-import { hospitalURL, weatherURL } from "@/lib/constants";
+import { HMsg, hospitalURL, weatherURL } from "@/lib/constants";
 
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
@@ -26,6 +26,7 @@ const LocationMap = () => {
     errMsg: "",
     isLoading: true,
   });
+  const [hList, setHList] = useState<string[]>([]);
 
   useEffect(() => {
     const script: HTMLScriptElement = document.createElement("script");
@@ -43,7 +44,7 @@ const LocationMap = () => {
   }, [apiKey]);
 
   useEffect(() => {
-    if (location && hospitalKey) {
+    if (location) {
       getWeather();
       getHospital();
     }
@@ -63,12 +64,16 @@ const LocationMap = () => {
     try {
       const url = hospitalURL;
       const option = {
-        KEY: hospitalKey,
+        //KEY: hospitalKey,
         Type: "json",
         pIndex: 1,
         pSize: 10,
       };
-      await postAxiosData(url, option);
+      const res = await postAxiosData(url, option);
+      const data = res.Animalhosptl;
+      if (data[0].head[1].RESULT.MESSAGE === HMsg) {
+        setHList(data[1].row);
+      }
     } catch (err) {
       console.log(err);
     }

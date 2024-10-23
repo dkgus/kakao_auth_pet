@@ -2,3 +2,5 @@ export const weatherURL = "https://api.openweathermap.org/data/2.5";
 
 export const hospitalURL =
   "https://cors-anywhere.herokuapp.com/https://openapi.gg.go.kr/Animalhosptl";
+
+export const HMsg = "정상 처리되었습니다.";
