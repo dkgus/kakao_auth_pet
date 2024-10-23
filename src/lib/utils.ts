@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const weatherTitle: any = {
+export const weatherTitle: object = {
   200: "천둥",
   300: "보슬비",
   500: "비",
