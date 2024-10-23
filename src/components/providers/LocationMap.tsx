@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getAxiosData, postAxiosData } from "@/lib/axiosData.tsx";
+import { getAxiosData, postAxiosData } from "@/lib/axiosData";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { weatherTitle } from "@/lib/utils";
@@ -109,12 +109,18 @@ const LocationMap = () => {
         <>
           현재 위치 날씨 :{weatherTitle[wInfo]}
           <Map
-            center={location.center}
+            center={{
+              lat: Number(location.center.lat),
+              lng: Number(location.center.lng),
+            }}
             style={{ width: "800px", height: "600px" }}
             level={3}
           >
             <MapMarker
-              position={location.center}
+              position={{
+                lat: Number(location.center.lat),
+                lng: Number(location.center.lng),
+              }}
               image={{
                 src: "https://cdn-icons-png.flaticon.com/128/7124/7124723.png",
                 size: {
