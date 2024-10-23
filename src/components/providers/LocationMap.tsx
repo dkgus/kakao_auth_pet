@@ -13,7 +13,7 @@ const LocationMap = () => {
   const hospitalKey: string | undefined = process.env.NEXT_PUBLIC_HOSPITAL_KEY;
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
-  const [wInfo, setWInfo] = useState("");
+  const [wInfo, setWInfo] = useState<number>(0);
   const [location, setLocation] = useState<{
     center: { lat: number; lng: number };
     errMsg: string;
