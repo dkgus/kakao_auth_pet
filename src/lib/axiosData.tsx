@@ -2,19 +2,18 @@ import axios from "axios";
 
 const headerOption = {
   "Content-Type": "application/json",
-  Cache: "No-cache",
 };
 
-export const getAxiosData = async (url) => {
+export const getAxiosData = async (url: string) => {
   const res = await axios.get(url, {
-    //headers: headerOption,
+    headers: headerOption,
   });
   return res.data;
 };
 
-export const postAxiosData = async (url, data) => {
+export const postAxiosData = async (url: string, data: object) => {
   const res = await axios.post(url, data, {
-    //headers: headerOption,
+    headers: headerOption,
   });
   return res.data;
 };

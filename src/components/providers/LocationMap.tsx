@@ -1,16 +1,19 @@
 "use client";
 
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { getAxiosData } from "@/lib/axiosData.tsx";
+import { getAxiosData, postAxiosData } from "@/lib/axiosData.tsx";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { weatherTitle } from "@/lib/utils";
+import { hospitalURL, weatherURL } from "@/lib/constants";
 
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
   const wApiKey: string | undefined = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+  const hospitalKey: string | undefined = process.env.NEXT_PUBLIC_HOSPITAL_KEY;
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
+  const [wInfo, setWInfo] = useState("");
   const [location, setLocation] = useState<{
     center: { lat: Number; lng: Number };
     errMsg: String;
@@ -20,7 +23,7 @@ const LocationMap = () => {
       lat: 33.450701,
       lng: 126.570667,
     },
-    errMsg: null,
+    errMsg: "",
     isLoading: true,
   });
 
@@ -40,15 +43,32 @@ const LocationMap = () => {
   }, [apiKey]);
 
   useEffect(() => {
-    if (location) {
+    if (location && hospitalKey) {
       getWeather();
+      getHospital();
     }
-  }, [location, wApiKey]);
+  }, [location, wApiKey, hospitalKey]);
 
   const getWeather = async () => {
     try {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${location.center.lat}&lon=${location.center.lng}&appid=${wApiKey}`;
+      const url = `${weatherURL}/weather?lat=${location.center.lat}&lon=${location.center.lng}&appid=${wApiKey}`;
       const data = await getAxiosData(url);
+      setWInfo(data.weather[0].id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getHospital = async () => {
+    try {
+      const url = hospitalURL;
+      const option = {
+        KEY: hospitalKey,
+        Type: "json",
+        pIndex: 1,
+        pSize: 10,
+      };
+      await postAxiosData(url, option);
     } catch (err) {
       console.log(err);
     }
@@ -86,24 +106,27 @@ const LocationMap = () => {
   return (
     <>
       {scriptLoad ? (
-        <Map
-          center={location.center}
-          style={{ width: "800px", height: "600px" }}
-          level={3}
-        >
-          <MapMarker
-            position={location.center}
-            image={{
-              src: "https://cdn-icons-png.flaticon.com/128/7124/7124723.png",
-              size: {
-                width: 50,
-                height: 50,
-              },
-            }}
-          />
-        </Map>
+        <>
+          현재 위치 날씨 :{weatherTitle[wInfo]}
+          <Map
+            center={location.center}
+            style={{ width: "800px", height: "600px" }}
+            level={3}
+          >
+            <MapMarker
+              position={location.center}
+              image={{
+                src: "https://cdn-icons-png.flaticon.com/128/7124/7124723.png",
+                size: {
+                  width: 50,
+                  height: 50,
+                },
+              }}
+            />
+          </Map>
+        </>
       ) : (
-        <div></div>
+        <div>페이지 로딩중입니다.</div>
       )}
     </>
   );
