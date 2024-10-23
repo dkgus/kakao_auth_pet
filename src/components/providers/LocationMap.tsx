@@ -15,8 +15,8 @@ const LocationMap = () => {
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
   const [wInfo, setWInfo] = useState("");
   const [location, setLocation] = useState<{
-    center: { lat: Number; lng: Number };
-    errMsg: String;
+    center: { lat: number; lng: number };
+    errMsg: string;
     isLoading: boolean;
   }>({
     center: {
@@ -110,16 +110,16 @@ const LocationMap = () => {
           현재 위치 날씨 :{weatherTitle[wInfo]}
           <Map
             center={{
-              lat: Number(location.center.lat),
-              lng: Number(location.center.lng),
+              lat: location.center.lat,
+              lng: location.center.lng,
             }}
             style={{ width: "800px", height: "600px" }}
             level={3}
           >
             <MapMarker
               position={{
-                lat: Number(location.center.lat),
-                lng: Number(location.center.lng),
+                lat: location.center.lat,
+                lng: location.center.lng,
               }}
               image={{
                 src: "https://cdn-icons-png.flaticon.com/128/7124/7124723.png",
