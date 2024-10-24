@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getAxiosData, postAxiosData } from "@/lib/axiosData";
+import { getAxiosData } from "@/lib/axiosData";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { weatherTitle } from "@/lib/utils";
-import { HMsg, hospitalURL, weatherURL } from "@/lib/constants";
+import { weatherURL } from "@/lib/constants";
 
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
@@ -15,7 +15,7 @@ const LocationMap = () => {
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
   const [wInfo, setWInfo] = useState<number>(0);
-  const [mapInstance, setMapInstance] = useState<any>(null);
+  const [mapInstance, setMapInstance] = useState<object>(null);
   const [location, setLocation] = useState<{
     center: { lat: number; lng: number };
     errMsg: string;
@@ -132,9 +132,10 @@ const LocationMap = () => {
               }}
             />
             {hList &&
-              hList.map((item) => {
+              hList.map((item, idx) => {
                 return (
                   <MapMarker
+                    key={`${location.center}-${idx}`}
                     position={{
                       lat: item.fclty_la,
                       lng: item.fclty_lo,
