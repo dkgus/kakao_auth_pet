@@ -15,7 +15,7 @@ const LocationMap = () => {
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
   const [wInfo, setWInfo] = useState<number>(0);
-  const [mapInstance, setMapInstance] = useState<object>(null);
+  const [mapInstance, setMapInstance] = useState<object>({});
   const [location, setLocation] = useState<{
     center: { lat: number; lng: number };
     errMsg: string;
