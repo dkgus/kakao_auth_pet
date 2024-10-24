@@ -11,9 +11,11 @@ const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
   const wApiKey: string | undefined = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
   const hospitalKey: string | undefined = process.env.NEXT_PUBLIC_HOSPITAL_KEY;
+  const hospitalURL: string | undefined = process.env.NEXT_PUBLIC_HOSPITAL_URL;
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
   const [wInfo, setWInfo] = useState<number>(0);
+  const [mapInstance, setMapInstance] = useState<any>(null);
   const [location, setLocation] = useState<{
     center: { lat: number; lng: number };
     errMsg: string;
@@ -63,16 +65,10 @@ const LocationMap = () => {
   const getHospital = async () => {
     try {
       const url = hospitalURL;
-      const option = {
-        //KEY: hospitalKey,
-        Type: "json",
-        pIndex: 1,
-        pSize: 10,
-      };
-      const res = await postAxiosData(url, option);
-      const data = res.Animalhosptl;
-      if (data[0].head[1].RESULT.MESSAGE === HMsg) {
-        setHList(data[1].row);
+      const res = await getAxiosData(url);
+
+      if (res.length > 0) {
+        setHList(res);
       }
     } catch (err) {
       console.log(err);
@@ -120,6 +116,7 @@ const LocationMap = () => {
             }}
             style={{ width: "800px", height: "600px" }}
             level={3}
+            onCreate={setMapInstance}
           >
             <MapMarker
               position={{
@@ -134,6 +131,29 @@ const LocationMap = () => {
                 },
               }}
             />
+            {hList &&
+              hList.map((item) => {
+                return (
+                  <MapMarker
+                    position={{
+                      lat: item.fclty_la,
+                      lng: item.fclty_lo,
+                    }}
+                    onClick={() =>
+                      mapInstance?.panTo(
+                        new kakao.maps.LatLng(item.fclty_la, item.fclty_lo)
+                      )
+                    }
+                    image={{
+                      src: "https://cdn-icons-png.flaticon.com/128/3062/3062089.png",
+                      size: {
+                        width: 50,
+                        height: 50,
+                      },
+                    }}
+                  />
+                );
+              })}
           </Map>
         </>
       ) : (
