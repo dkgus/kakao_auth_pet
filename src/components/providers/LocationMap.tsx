@@ -8,6 +8,10 @@ import { weatherTitle } from "@/lib/utils";
 import { weatherURL } from "@/lib/constants";
 import { Location, MapInstance } from "@/lib/mapType";
 
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Spin from "../ui/spin";
+
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
   const wApiKey: string | undefined = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
@@ -31,6 +35,7 @@ const LocationMap = () => {
   });
 
   const [hList, setHList] = useState<Location[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const script: HTMLScriptElement = document.createElement("script");
@@ -50,7 +55,7 @@ const LocationMap = () => {
   useEffect(() => {
     if (location) {
       getWeather();
-      getHospital();
+      //getHospital();
     }
   }, [location, wApiKey, hospitalKey]);
 
@@ -66,14 +71,17 @@ const LocationMap = () => {
 
   const getHospital = async () => {
     try {
+      setLoading(true);
       const url = hospitalURL;
       const res = await getAxiosData(String(url));
 
       if (res.length > 0) {
         setHList(res);
+        setLoading(false);
       }
     } catch (err: unknown) {
       console.error(err);
+      setLoading(true);
     }
   };
 
@@ -109,9 +117,36 @@ const LocationMap = () => {
 
   return (
     <>
+      {loading && (
+        <Alert style={{ zIndex: 1001 }}>
+          <AlertTitle>병원 정보를 로드중입니다 </AlertTitle>
+          <AlertDescription>잠시만 기다려주세요.</AlertDescription>
+        </Alert>
+      )}
       {scriptLoad ? (
         <>
           현재 위치 날씨: {weatherTitle[wInfo]}
+          <div>
+            <Button onClick={getHospital}>동물 병원 찾기</Button>
+          </div>
+          {loading && (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(255, 255, 255, 0.7)", // White background with transparency
+                zIndex: 1000,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spin />
+            </div>
+          )}
           <Map
             center={{
               lat: location.center.lat,
