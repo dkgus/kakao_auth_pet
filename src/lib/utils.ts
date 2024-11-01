@@ -28,3 +28,7 @@ export const weatherTitle: { [key: number]: string } = {
   803: "흐림",
   804: "흐림",
 };
+
+export const moveLocation = (ref: any, la: Number, lo: Number) => {
+  return ref?.panTo(new kakao.maps.LatLng(Number(la), Number(lo)));
+};
