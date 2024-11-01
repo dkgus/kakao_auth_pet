@@ -26,6 +26,7 @@ const LocationMap = () => {
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
   const [wInfo, setWInfo] = useState<number>(0);
+  const [reset, setReset] = useState<boolean>(false);
   const [mapInstance, setMapInstance] = useState<MapFuncType | null>(null);
   const [location, setLocation] = useState<{
     center: { lat: number; lng: number };
@@ -33,12 +34,27 @@ const LocationMap = () => {
     isLoading: boolean;
   }>({
     center: {
-      lat: 33.450701,
-      lng: 126.570667,
+      lat: 0,
+      lng: 0,
     },
     errMsg: "",
     isLoading: true,
   });
+
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  }>(location.center);
+
+  useEffect(() => {
+    if (
+      location.center.lat !== 0 &&
+      location.center.lng !== 0 &&
+      location.center !== currentLocation
+    ) {
+      setReset(true);
+    }
+  }, [currentLocation]);
 
   const [hospitalList, setHospitalList] = useState<LocationType[]>([]);
   const [hotelList, setHotelList] = useState<LocationType[]>([]);
@@ -115,14 +131,13 @@ const LocationMap = () => {
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+      const watchId = navigator.geolocation.watchPosition(
         (position) => {
+          const { latitude, longitude } = position.coords;
           setLocation((prev) => ({
             ...prev,
-            center: {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
+            center: { lat: latitude, lng: longitude },
+            errMsg: "",
             isLoading: false,
           }));
         },
@@ -134,6 +149,10 @@ const LocationMap = () => {
           }));
         }
       );
+
+      return () => {
+        navigator.geolocation.clearWatch(watchId);
+      };
     } else {
       setLocation((prev) => ({
         ...prev,
@@ -147,7 +166,7 @@ const LocationMap = () => {
     if (!hotelTemp) return;
     hotelTemp?.map((item: HotelType) => {
       const geocoder = new kakao.maps.services.Geocoder();
-      geocoder.addressSearch(item.ldgs_addr, function (result, status) {
+      geocoder.addressSearch(item.ldgs_addr, (result, status) => {
         if (status === "OK") {
           const arr: LocationType[] = [];
           arr.push({
@@ -170,13 +189,16 @@ const LocationMap = () => {
     const lat: number = Number(item.fclty_la);
     const lng: number = Number(item.fclty_lo);
 
-    const obj: MarkerType = {
+    return {
       position: { lat, lng },
       img: { src: "https://cdn-icons-png.flaticon.com/128/3062/3062089.png" },
       onClick: () => moveLocation(mapInstance, lat, lng),
     };
+  };
 
-    return obj;
+  const handleMapDrag = (map: kakao.maps.Map) => {
+    const center = map.getCenter();
+    setCurrentLocation({ lat: center.getLat(), lng: center.getLng() });
   };
 
   return (
@@ -193,6 +215,7 @@ const LocationMap = () => {
           <div className="flex justify-between w-[50%]">
             <Button onClick={getHospital}>동물 병원 찾기</Button>
             <Button onClick={getHotel}>애완동물 동반 호텔</Button>
+            {reset && <Button>내 위치로 돌아가기</Button>}
           </div>
           {loading && (
             <div
@@ -219,7 +242,12 @@ const LocationMap = () => {
             }}
             style={{ width: "800px", height: "600px" }}
             level={3}
-            onCreate={(map) => setMapInstance(map)}
+            onCreate={(map) => {
+              setMapInstance(map);
+              kakao.maps.event.addListener(map, "dragend", () =>
+                handleMapDrag(map)
+              );
+            }}
           >
             <CustomMaker
               position={{
