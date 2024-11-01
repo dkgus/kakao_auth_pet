@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { MapFuncType } from "./mapType";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,6 +30,10 @@ export const weatherTitle: { [key: number]: string } = {
   804: "흐림",
 };
 
-export const moveLocation = (ref: any, la: Number, lo: Number) => {
+export const moveLocation = (
+  ref: MapFuncType | null,
+  la: number,
+  lo: number
+) => {
   return ref?.panTo(new kakao.maps.LatLng(Number(la), Number(lo)));
 };

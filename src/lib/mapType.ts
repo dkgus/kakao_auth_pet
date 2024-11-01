@@ -12,7 +12,6 @@ export interface MapFuncType {
 }
 
 export interface MarkerType {
-  key: string;
   position: {
     lat: number;
     lng: number;

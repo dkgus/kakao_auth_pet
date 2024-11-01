@@ -106,7 +106,9 @@ const LocationMap = () => {
         setHospitalList([]);
         setLoading(false);
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error(err);
+
       setLoading(true);
     }
   };
@@ -162,7 +164,6 @@ const LocationMap = () => {
   }, [hotelTemp]);
 
   const MarkerItem = (
-    idx: number,
     item: LocationType,
     mapInstance: MapFuncType | null
   ): MarkerType => {
@@ -170,7 +171,6 @@ const LocationMap = () => {
     const lng: number = Number(item.fclty_lo);
 
     const obj: MarkerType = {
-      key: `${lat}-${lng}-${idx}`,
       position: { lat, lng },
       img: { src: "https://cdn-icons-png.flaticon.com/128/3062/3062089.png" },
       onClick: () => moveLocation(mapInstance, lat, lng),
@@ -183,7 +183,7 @@ const LocationMap = () => {
     <>
       {loading && (
         <Alert style={{ zIndex: 1001 }}>
-          <AlertTitle>병원 정보를 로드중입니다 </AlertTitle>
+          <AlertTitle>로드중입니다 </AlertTitle>
           <AlertDescription>잠시만 기다려주세요.</AlertDescription>
         </Alert>
       )}
@@ -232,11 +232,11 @@ const LocationMap = () => {
             />
 
             {hospitalList?.map((item: LocationType, idx: number) => (
-              <CustomMaker {...MarkerItem(idx, item, mapInstance)} />
+              <CustomMaker key={idx} {...MarkerItem(item, mapInstance)} />
             ))}
 
             {hotelList?.map((item: LocationType, idx: number) => (
-              <CustomMaker {...MarkerItem(idx, item, mapInstance)} />
+              <CustomMaker key={idx} {...MarkerItem(item, mapInstance)} />
             ))}
           </Map>
         </>
