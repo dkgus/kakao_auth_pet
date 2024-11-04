@@ -9,6 +9,7 @@ export interface HotelType {
 
 export interface MapFuncType {
   panTo: (latLng: kakao.maps.LatLng) => void;
+  setCenter: (latLng: kakao.maps.LatLng) => void;
 }
 
 export interface MarkerType {

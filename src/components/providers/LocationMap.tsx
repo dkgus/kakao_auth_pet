@@ -41,21 +41,6 @@ const LocationMap = () => {
     isLoading: true,
   });
 
-  const [currentLocation, setCurrentLocation] = useState<{
-    lat: number;
-    lng: number;
-  }>(location.center);
-
-  useEffect(() => {
-    if (
-      location.center.lat !== 0 &&
-      location.center.lng !== 0 &&
-      location.center !== currentLocation
-    ) {
-      setReset(true);
-    }
-  }, [currentLocation]);
-
   const [hospitalList, setHospitalList] = useState<LocationType[]>([]);
   const [hotelList, setHotelList] = useState<LocationType[]>([]);
   const [hotelTemp, setHotelTemp] = useState<HotelType[]>([]);
@@ -182,6 +167,25 @@ const LocationMap = () => {
     });
   }, [hotelTemp]);
 
+  const handleMapDrag = (map: kakao.maps.Map) => {
+    const center = map.getCenter();
+
+    const isLocationDifferent =
+      Math.abs(center.getLat() - location.center.lat) > 0.0001 ||
+      Math.abs(center.getLng() - location.center.lng) > 0.0001;
+
+    setReset(isLocationDifferent);
+  };
+
+  const onReset = async () => {
+    if (mapInstance && location.center.lat && location.center.lng) {
+      mapInstance.setCenter(
+        new kakao.maps.LatLng(location.center.lat, location.center.lng)
+      );
+      setReset(false);
+    }
+  };
+
   const MarkerItem = (
     item: LocationType,
     mapInstance: MapFuncType | null
@@ -194,11 +198,6 @@ const LocationMap = () => {
       img: { src: "https://cdn-icons-png.flaticon.com/128/3062/3062089.png" },
       onClick: () => moveLocation(mapInstance, lat, lng),
     };
-  };
-
-  const handleMapDrag = (map: kakao.maps.Map) => {
-    const center = map.getCenter();
-    setCurrentLocation({ lat: center.getLat(), lng: center.getLng() });
   };
 
   return (
@@ -215,7 +214,7 @@ const LocationMap = () => {
           <div className="flex justify-between w-[50%]">
             <Button onClick={getHospital}>동물 병원 찾기</Button>
             <Button onClick={getHotel}>애완동물 동반 호텔</Button>
-            {reset && <Button>내 위치로 돌아가기</Button>}
+            {reset && <Button onClick={onReset}>내 위치로 돌아가기</Button>}
           </div>
           {loading && (
             <div
@@ -240,6 +239,7 @@ const LocationMap = () => {
               lat: location.center.lat,
               lng: location.center.lng,
             }}
+            isPanto={true}
             style={{ width: "800px", height: "600px" }}
             level={3}
             onCreate={(map) => {
