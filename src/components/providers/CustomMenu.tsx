@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import MenuIcon from "../icons/menuIcon";
+import MenuIcon from "@/components/icons/MenuIcon";
 
 const DropdownMenu = (props: {
   menuList: { key: string; value: string }[];
