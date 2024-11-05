@@ -31,22 +31,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         
         <AuthSession>
-                    
           <div className="h-[48px] bg-black flex items-center">
-                          
             <ul className="ml-auto mr-5">
-                                {" "}
+              {" "}
               <li>
-                <LoginButton></LoginButton>
+                <LoginButton />
               </li>
-                            
             </ul>
-                      
           </div>
-                  {children}
-                
+          {children}
         </AuthSession>
       </body>
       {/* <Script src="https://developers.kakao.com/sdk/js/kakao.js" async />
