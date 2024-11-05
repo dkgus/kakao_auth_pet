@@ -17,7 +17,8 @@ import { Button } from "@/components/ui/button";
 import CustomMaker from "@/components/providers/CustomMaker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Spin from "../ui/spin";
-import Greeting from "./Greeting";
+import Greeting from "@/components/providers/Greeting";
+import RadioMenu from "@/components/providers/RadioMenu";
 
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
@@ -240,11 +241,7 @@ const LocationMap = () => {
       {scriptLoad ? (
         <>
           <Greeting weather={weatherTitle[wInfo]} add={address} />
-          <div className="flex justify-between m-auto w-[90%] pb-3">
-            <Button onClick={getHospital}>동물 병원 찾기</Button>
-            <Button onClick={getHotel}>애완동물 동반 호텔</Button>
-            {reset && <Button onClick={onReset}>내 위치로 돌아가기</Button>}
-          </div>
+
           {loading && (
             <div
               style={{
@@ -269,7 +266,12 @@ const LocationMap = () => {
               lng: location.center.lng,
             }}
             isPanto={true}
-            style={{ width: "90%", height: "600px", margin: "0 auto" }}
+            style={{
+              width: "90%",
+              height: "600px",
+              margin: "0 auto",
+              position: "relative",
+            }}
             level={3}
             onCreate={(map) => {
               setMapInstance(map);
@@ -278,6 +280,14 @@ const LocationMap = () => {
               );
             }}
           >
+            <div className="controllers-container absolute top-[16%] right-[7%] md:right-[15%] z-[1]">
+              <RadioMenu
+                type={["hospital", "hotel"]}
+                getHospital={getHospital}
+                getHotel={getHotel}
+              />
+              {/* {reset && <Button onClick={onReset}>내 위치로 돌아가기</Button>} */}
+            </div>
             <CustomMaker
               position={{
                 lat: location.center.lat,
