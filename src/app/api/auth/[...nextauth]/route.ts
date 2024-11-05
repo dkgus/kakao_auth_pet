@@ -30,7 +30,7 @@ const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user }) {
       const client = await clientPromise;
       console.log("client", client.db);
       const db = client.db("User");
