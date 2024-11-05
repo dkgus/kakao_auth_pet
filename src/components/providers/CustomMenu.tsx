@@ -37,8 +37,8 @@ const DropdownMenu = (props: {
             aria-orientation="vertical"
             aria-labelledby="options-menu"
           >
-            {menuList?.map((item) => (
-              <>
+            {menuList?.map((item, idx) => (
+              <div key={idx}>
                 {item.key === "event" ? (
                   <>
                     {data ? (
@@ -58,7 +58,7 @@ const DropdownMenu = (props: {
                     {item.value}
                   </button>
                 )}
-              </>
+              </div>
             ))}
           </div>
         </div>
