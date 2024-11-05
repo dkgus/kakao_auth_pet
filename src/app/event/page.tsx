@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { loginURL } from "@/lib/constants";
 
 const EventPage = () => {
-  const { data: _, status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -30,7 +30,15 @@ const EventPage = () => {
     return <div>Loading...</div>;
   }
 
-  return <>로그인 된 회원만 볼 수 있는 화면</>;
+  return (
+    <>
+      {session ? (
+        <p>예약사이트 입니다, {session.user?.name}님!</p>
+      ) : (
+        <p>Please log in.</p>
+      )}
+    </>
+  );
 };
 
 export default EventPage;
