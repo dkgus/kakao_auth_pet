@@ -17,16 +17,20 @@ import { Button } from "@/components/ui/button";
 import CustomMaker from "@/components/providers/CustomMaker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Spin from "../ui/spin";
+import Greeting from "./Greeting";
 
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
   const wApiKey: string | undefined = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
   const hospitalURL: string | undefined = process.env.NEXT_PUBLIC_HOSPITAL_URL;
   const hotelURL: string | undefined = process.env.NEXT_PUBLIC_HOTEL_URL;
+  const restKey: string | undefined =
+    process.env.NEXT_PUBLIC_KAKAO_LOCATION_KEY;
 
   const [scriptLoad, setScriptLoad] = useState<boolean>(false);
   const [wInfo, setWInfo] = useState<number>(0);
   const [reset, setReset] = useState<boolean>(false);
+  const [address, setAddress] = useState<string>("");
   const [mapInstance, setMapInstance] = useState<MapFuncType | null>(null);
   const [location, setLocation] = useState<{
     center: { lat: number; lng: number };
@@ -67,6 +71,31 @@ const LocationMap = () => {
       getWeather();
     }
   }, [location, wApiKey]);
+
+  useEffect(() => {
+    getKRaddress(location.center.lat, location.center.lng);
+  }, [location, restKey]);
+
+  const getKRaddress = async (lat: number, lng: number) => {
+    const KAKAO_API_KEY = restKey;
+    const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `KakaoAK ${KAKAO_API_KEY}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch address");
+    }
+
+    const data = await response.json();
+    const address =
+      data.documents[0]?.address?.address_name || "주소를 찾을 수 없습니다.";
+
+    setAddress(address);
+  };
 
   const getWeather = async () => {
     try {
@@ -210,8 +239,8 @@ const LocationMap = () => {
       )}
       {scriptLoad ? (
         <>
-          현재 위치 날씨: {weatherTitle[wInfo]}
-          <div className="flex justify-between w-[50%]">
+          <Greeting weather={weatherTitle[wInfo]} add={address} />
+          <div className="flex justify-between m-auto w-[90%] pb-3">
             <Button onClick={getHospital}>동물 병원 찾기</Button>
             <Button onClick={getHotel}>애완동물 동반 호텔</Button>
             {reset && <Button onClick={onReset}>내 위치로 돌아가기</Button>}
@@ -240,7 +269,7 @@ const LocationMap = () => {
               lng: location.center.lng,
             }}
             isPanto={true}
-            style={{ width: "800px", height: "600px" }}
+            style={{ width: "90%", height: "600px", margin: "0 auto" }}
             level={3}
             onCreate={(map) => {
               setMapInstance(map);

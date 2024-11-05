@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 // import Script from "next/script";
 import "./globals.css";
+import CustomMenu from "@/components/providers/CustomMenu";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,27 +28,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased md:w-[80%] sm:w-[100%] m-auto h-full`}
       >
         <AuthSession>
-          <div className="h-[48px] bg-black flex items-center">
-            <ul className="ml-auto mr-5">
-              {" "}
-              <li>
-                <LoginButton />
-              </li>
-            </ul>
+          <div className="h-[48px] flex items-center bg-[#FFB200] justify-between px-5">
+            <div>
+              <CustomMenu
+                menuList={[
+                  { key: "event", value: "이벤트 페이지" },
+                  { key: "community", value: "소통 게시판" },
+                  { key: "hotel", value: "반려동물 호텔 예약" },
+                ]}
+              />
+            </div>
+            <div className="font-bold">OH MY PET</div>
+            <div>
+              <LoginButton />
+            </div>
           </div>
           {children}
         </AuthSession>
       </body>
-      {/* <Script src="https://developers.kakao.com/sdk/js/kakao.js" async />
-      <Script
-        type="text/javascript"
-        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_API_KEY}&autoload=false&libraries=services`}
-      /> */}
     </html>
   );
 }
