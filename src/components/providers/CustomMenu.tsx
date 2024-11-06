@@ -13,7 +13,7 @@ const DropdownMenu = (props: {
   const { menuList, type } = props;
   const { data } = useSession();
   const router = useRouter();
-  const direction = type === "l_down" ? "left" : "right";
+  const direction = type === "l_down" ? "left-0" : "right-0";
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -40,7 +40,7 @@ const DropdownMenu = (props: {
       <MenuIcon toggleMenu={toggleMenu} type={type} />
       {isOpen && (
         <div
-          className={`absolute ${direction}-0 z-10 mt-1 w-[170px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5`}
+          className={`absolute ${direction} z-10 mt-1 w-[170px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5`}
         >
           <div
             className="py-1"
