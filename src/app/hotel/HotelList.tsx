@@ -10,10 +10,14 @@ const HotelList = () => {
       <SearchBar />
       <ScrollArea className="h-[90%] w-[100%] rounded-md border p-4">
         <div className="flex flex-wrap flex-row gap-5">
+          {/* 모바일 버전에서는 2개, 그 이상부턴 6개씩 */}
           {Array(6)
             .fill(0)
             .map((_, idx) => (
-              <div key={idx} className="w-[32%]">
+              <div
+                key={idx}
+                className="w-full sm:w-full md:w-[100%] lg:w-[100%] xl:w-[32%]"
+              >
                 <CustomCard />
               </div>
             ))}

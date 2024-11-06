@@ -11,11 +11,15 @@ import {
 const CustomCard = () => {
   return (
     <Card className="h-[250px]">
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+      <CardHeader className="m-0 p-0">
+        <img
+          style={{ maxHeight: "100px" }}
+          src="https://github.com/shadcn.png"
+          alt="@shadcn"
+        />
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-3">
+        <CardTitle>Card Title</CardTitle>
         <p>Card Content</p>
       </CardContent>
       <CardFooter>
