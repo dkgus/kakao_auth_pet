@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import AuthSession from "@/components/providers/session-provider";
 import LoginButton from "@/components/login-button";
-import localFont from "next/font/local";
 import CustomMenu from "@/components/providers/CustomMenu";
+import AuthSession from "@/components/providers/session-provider";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
 
-import "./globals.css";
 import CustomLogo from "@/components/providers/CustomLogo";
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,6 +37,7 @@ export default function RootLayout({
           <div className="h-[48px] flex items-center bg-[#FFB200] justify-between px-5">
             <div>
               <CustomMenu
+                type="l_down"
                 menuList={[
                   { key: "event", value: "이벤트 페이지" },
                   { key: "community", value: "소통 게시판" },

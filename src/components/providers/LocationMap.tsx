@@ -236,10 +236,9 @@ const LocationMap = () => {
   return (
     <>
       {loading && (
-        <Alert style={{ zIndex: 1001 }}>
-          <AlertTitle>로드중입니다 </AlertTitle>
-          <AlertDescription>잠시만 기다려주세요.</AlertDescription>
-        </Alert>
+        <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-70 z-[1000] flex items-center justify-center">
+          <Spin />
+        </div>
       )}
       {scriptLoad ? (
         <>

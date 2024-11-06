@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { layoutCSS, loginURL } from "@/lib/constants";
 import { useSession } from "next-auth/react";
-import { loginURL } from "@/lib/constants";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const EventPage = () => {
   const { data: session, status } = useSession();
@@ -31,13 +31,13 @@ const EventPage = () => {
   }
 
   return (
-    <>
+    <div className={layoutCSS}>
       {session ? (
         <p>예약사이트 입니다, {session.user?.name}님!</p>
       ) : (
         <p>Please log in.</p>
       )}
-    </>
+    </div>
   );
 };
 
