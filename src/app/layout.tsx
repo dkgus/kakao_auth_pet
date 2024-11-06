@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import AuthSession from "@/components/providers/session-provider";
 import LoginButton from "@/components/login-button";
-import type { Metadata } from "next";
 import localFont from "next/font/local";
-// import Script from "next/script";
-import "./globals.css";
 import CustomMenu from "@/components/providers/CustomMenu";
+
+import "./globals.css";
+import CustomLogo from "@/components/providers/CustomLogo";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -43,7 +44,7 @@ export default function RootLayout({
                 ]}
               />
             </div>
-            <div className="font-bold">OH MY PET</div>
+            <CustomLogo />
             <div>
               <LoginButton />
             </div>

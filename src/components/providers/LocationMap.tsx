@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { getAxiosData } from "@/lib/axiosData";
+import { useEffect, useState } from "react";
 
-import { Map } from "react-kakao-maps-sdk";
-import { moveLocation, weatherTitle } from "@/lib/utils";
 import { weatherURL } from "@/lib/constants";
 import {
-  LocationType,
   HotelType,
+  LocationType,
   MapFuncType,
   MarkerType,
 } from "@/lib/mapType";
+import { moveLocation } from "@/lib/utils";
+import { Map } from "react-kakao-maps-sdk";
 
-import { Button } from "@/components/ui/button";
 import CustomMaker from "@/components/providers/CustomMaker";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import Spin from "../ui/spin";
 import Greeting from "@/components/providers/Greeting";
 import RadioMenu from "@/components/providers/RadioMenu";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import Spin from "../ui/spin";
 
 import MultiIcon from "@/components/icons/MultiIcon";
 import { faHouseChimney } from "@fortawesome/free-solid-svg-icons";
@@ -243,7 +243,7 @@ const LocationMap = () => {
       )}
       {scriptLoad ? (
         <>
-          <Greeting weather={weatherTitle[wInfo]} add={address} />
+          <Greeting weather={wInfo} add={address} />
 
           {loading && (
             <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-70 z-[1000] flex items-center justify-center">
@@ -278,7 +278,7 @@ const LocationMap = () => {
               />
 
               {reset && (
-                <div className="fixed bottom-28 right-30 z-50 r">
+                <div className="fixed bottom-24 right-30 z-50 r">
                   <Button size="lg" onClick={onReset} className="rounded-full">
                     <MultiIcon icon={faHouseChimney} />
                   </Button>
