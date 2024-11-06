@@ -1,6 +1,7 @@
 import React from "react";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
-import MultiIcon from "../icons/MultiIcon";
+
+import MultiIcon from "@/components/icons/MultiIcon";
 import { faStethoscope, faHotel } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 

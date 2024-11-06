@@ -20,6 +20,9 @@ import Spin from "../ui/spin";
 import Greeting from "@/components/providers/Greeting";
 import RadioMenu from "@/components/providers/RadioMenu";
 
+import MultiIcon from "@/components/icons/MultiIcon";
+import { faHouseChimney } from "@fortawesome/free-solid-svg-icons";
+
 const LocationMap = () => {
   const apiKey: string | undefined = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
   const wApiKey: string | undefined = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
@@ -243,20 +246,7 @@ const LocationMap = () => {
           <Greeting weather={weatherTitle[wInfo]} add={address} />
 
           {loading && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-                zIndex: 1000,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-70 z-[1000] flex items-center justify-center">
               <Spin />
             </div>
           )}
@@ -286,8 +276,16 @@ const LocationMap = () => {
                 getHospital={getHospital}
                 getHotel={getHotel}
               />
-              {/* {reset && <Button onClick={onReset}>내 위치로 돌아가기</Button>} */}
+
+              {reset && (
+                <div className="fixed bottom-28 right-30 z-50 r">
+                  <Button size="lg" onClick={onReset} className="rounded-full">
+                    <MultiIcon icon={faHouseChimney} />
+                  </Button>
+                </div>
+              )}
             </div>
+
             <CustomMaker
               position={{
                 lat: location.center.lat,
