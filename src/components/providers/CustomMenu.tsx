@@ -26,7 +26,7 @@ const DropdownMenu = (props: {
       logout: async () => await signOut(),
     };
 
-    const action: any = actions[option];
+    const action = actions[option];
     if (action) await action();
 
     setIsOpen(false);

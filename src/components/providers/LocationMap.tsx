@@ -16,7 +16,6 @@ import { Map } from "react-kakao-maps-sdk";
 import CustomMaker from "@/components/providers/CustomMaker";
 import Greeting from "@/components/providers/Greeting";
 import RadioMenu from "@/components/providers/RadioMenu";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Spin from "../ui/spin";
 
