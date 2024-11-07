@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import CustomLogo from "@/components/providers/CustomLogo";
+import { mainBgColor } from "@/lib/constants";
+
 import "./globals.css";
 
 const geistSans = localFont({
@@ -34,7 +36,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased md:w-[80%] sm:w-[100%] m-auto h-full`}
       >
         <AuthSession>
-          <div className="h-[48px] flex items-center bg-[#FFB200] justify-between px-5">
+          <div
+            className={`h-[48px] flex items-center ${mainBgColor} justify-between px-5`}
+          >
             <div>
               <CustomMenu
                 type="l_down"

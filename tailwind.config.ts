@@ -13,6 +13,7 @@ const config: Config = {
     "pt-[16px]",
     "left-0",
     "right-0",
+    "bg-[#FFB200]",
   ],
   theme: {
     extend: {

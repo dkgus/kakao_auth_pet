@@ -1,3 +1,5 @@
+"use client";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -5,24 +7,51 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { mainBgColor } from "@/lib/constants";
 
-const CustomCard = (props: { item: { ldgs_nm: string } }) => {
+const CustomCard = (props: {
+  item: { ldgs_nm: string; ldgs_addr: string; pet_info_cn: string };
+}) => {
   const { item } = props;
+
+  const featItems = item.pet_info_cn
+    .replace(/[\[\]']/g, "")
+    .split(",")
+    .map((item) => item.trim());
+
   return (
     <Card className="h-[250px]">
-      <CardHeader className="m-0 p-0">
+      <CardHeader className="p-0 m-0">
         <img
           style={{ maxHeight: "100px" }}
           src="https://github.com/shadcn.png"
           alt="@shadcn"
         />
       </CardHeader>
-      <CardContent className="pt-3">
-        <CardTitle>{item.ldgs_nm}</CardTitle>
-        <p>Card Content</p>
+      <CardContent className="py-1 m-0">
+        <CardTitle className="pt-1 text-[17px]">{item.ldgs_nm}</CardTitle>
+        <div className="text-[13px] text-[gray]">위치: {item.ldgs_addr}</div>
       </CardContent>
       <CardFooter>
-        <p>Card Footer</p>
+        <div>
+          {featItems.slice(0, 3).map((item, idx) => (
+            <span key={idx}>
+              <Badge className={`${mainBgColor} mr-[1px]`}>{item}</Badge>
+            </span>
+          ))}
+          {featItems.length > 3 && (
+            <span className="pl-1">
+              <Badge
+                className={`${mainBgColor} text-[10px] text-[#000] hover:text-[#fff]`}
+              >
+                + {featItems.length - 3}
+              </Badge>
+            </span>
+          )}
+          <div className="hover:underline text-sm text-[gray] pt-3 text-[12px]">
+            상세 페이지
+          </div>
+        </div>
       </CardFooter>
     </Card>
   );
