@@ -1,10 +1,7 @@
-import { NextResponse, NextRequest } from "next/server";
-import { MongoClient } from "mongodb";
 import { getDb } from "@/lib/db";
+import { NextResponse } from "next/server";
 
-const clientPromise = MongoClient.connect(process.env.MONGODB_URI || "");
-
-export async function GET(req: NextRequest) {
+export async function GET() {
   const db = await getDb();
   const hotelListCollection = db.collection("HotelList");
 
