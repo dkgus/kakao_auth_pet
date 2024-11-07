@@ -6,8 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const CustomCard = (props: { item: object }) => {
-  //const { item } = props;
+const CustomCard = (props: { item: { ldgs_nm: string } }) => {
+  const { item } = props;
   return (
     <Card className="h-[250px]">
       <CardHeader className="m-0 p-0">
@@ -18,7 +18,7 @@ const CustomCard = (props: { item: object }) => {
         />
       </CardHeader>
       <CardContent className="pt-3">
-        <CardTitle>Card Title</CardTitle>
+        <CardTitle>{item.ldgs_nm}</CardTitle>
         <p>Card Content</p>
       </CardContent>
       <CardFooter>
