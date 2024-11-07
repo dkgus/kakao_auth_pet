@@ -32,7 +32,6 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user }) {
       const client = await clientPromise;
-      console.log("client", client.db);
       const db = client.db("User");
       //const databases = await client.db().admin().listDatabases();
       const existingUser = await db.collection("User").findOne({ id: user.id });

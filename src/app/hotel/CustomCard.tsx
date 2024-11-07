@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -7,7 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const CustomCard = () => {
+const CustomCard = (props: { item: object }) => {
+  //const { item } = props;
   return (
     <Card className="h-[250px]">
       <CardHeader className="m-0 p-0">
