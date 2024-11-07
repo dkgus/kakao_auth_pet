@@ -9,10 +9,13 @@ import SearchBar from "@/components/providers/SearchBar";
 
 import { getAxiosData } from "@/lib/axiosData";
 import { HotelImgType } from "@/lib/hotelType";
+import Spin from "@/components/ui/spin";
 
 const HotelList = () => {
   const [hList, setHList] = useState<string[]>([]);
   const [imgLi, setImgLi] = useState<HotelImgType[]>([]);
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const imgList = async () => {
@@ -46,9 +49,11 @@ const HotelList = () => {
         );
 
         setHList(imgDataSet);
+        setLoading(false);
       } catch (err) {
         console.error(err);
         setHList([]);
+        setLoading(true);
       }
     };
 
@@ -59,21 +64,34 @@ const HotelList = () => {
     <>
       <SearchBar />
       <ScrollArea className="h-[90%] w-[100%] rounded-md border p-4">
-        <div className="flex flex-wrap flex-row gap-5">
-          {/* 모바일 버전에서는 2개, 그 이상부턴 6개씩 */}
-          {hList?.map((item, idx) => (
-            <div
-              key={idx}
-              className="w-full sm:w-full md:w-[100%] lg:w-[100%] xl:w-[32%]"
-            >
-              <CustomCard item={Object(item)} />
+        {loading ? (
+          <div className="relative h-[70vh]">
+            <div className="text-[gray] absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 ">
+              <div className="pl-[50%] pb-[10px]">
+                <Spin />
+              </div>
+              호텔 리스트를 조회중입니다. 잠시만 기다려주세요...
             </div>
-          ))}
-        </div>
-
-        <div>
-          <Button className="w-[100%] mt-5">MORE</Button>
-        </div>
+          </div>
+        ) : (
+          <>
+            {" "}
+            <div className="flex flex-wrap flex-row gap-5">
+              {/* 모바일 버전에서는 2개, 그 이상부턴 6개씩 */}
+              {hList?.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="w-full sm:w-full md:w-[100%] lg:w-[100%] xl:w-[32%]"
+                >
+                  <CustomCard item={Object(item)} />
+                </div>
+              ))}
+            </div>
+            <div>
+              <Button className="w-[100%] mt-5">MORE</Button>
+            </div>
+          </>
+        )}
       </ScrollArea>
     </>
   );

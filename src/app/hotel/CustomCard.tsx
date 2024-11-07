@@ -37,7 +37,7 @@ const CustomCard = (props: {
         <div>
           {featItems.slice(0, 3).map((item, idx) => (
             <span key={idx}>
-              <Badge className={`${mainBgColor} mr-[1px]`}>{item}</Badge>
+              <Badge className={`${mainBgColor} mr-[2px]`}>{item}</Badge>
             </span>
           ))}
           {featItems.length > 3 && (
@@ -49,7 +49,7 @@ const CustomCard = (props: {
               </Badge>
             </span>
           )}
-          <div className="hover:underline text-sm text-[gray] pt-3 text-[12px]">
+          <div className="hover:underline text-sm text-[#000] font-extrabold pt-3 text-[12px] text-right">
             예약하기
           </div>
         </div>
