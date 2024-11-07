@@ -10,7 +10,12 @@ import {
 import { mainBgColor } from "@/lib/constants";
 
 const CustomCard = (props: {
-  item: { ldgs_nm: string; ldgs_addr: string; pet_info_cn: string };
+  item: {
+    ldgs_nm: string;
+    ldgs_addr: string;
+    pet_info_cn: string;
+    img: string;
+  };
 }) => {
   const { item } = props;
 
@@ -22,11 +27,7 @@ const CustomCard = (props: {
   return (
     <Card className="h-[250px]">
       <CardHeader className="p-0 m-0">
-        <img
-          style={{ maxHeight: "100px" }}
-          src="https://github.com/shadcn.png"
-          alt="@shadcn"
-        />
+        <img style={{ maxHeight: "100px" }} src={item.img} alt="@shadcn" />
       </CardHeader>
       <CardContent className="py-1 m-0">
         <CardTitle className="pt-1 text-[17px]">{item.ldgs_nm}</CardTitle>
@@ -49,7 +50,7 @@ const CustomCard = (props: {
             </span>
           )}
           <div className="hover:underline text-sm text-[gray] pt-3 text-[12px]">
-            상세 페이지
+            예약하기
           </div>
         </div>
       </CardFooter>
