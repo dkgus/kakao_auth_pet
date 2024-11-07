@@ -8,9 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { mainBgColor } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 
 const CustomCard = (props: {
   item: {
+    _id: string;
     ldgs_nm: string;
     ldgs_addr: string;
     pet_info_cn: string;
@@ -18,12 +20,12 @@ const CustomCard = (props: {
   };
 }) => {
   const { item } = props;
+  const router = useRouter();
 
   const featItems = item.pet_info_cn
     .replace(/[\[\]']/g, "")
     .split(",")
     .map((item) => item.trim());
-
   return (
     <Card className="h-[250px]">
       <CardHeader className="p-0 m-0">
@@ -49,7 +51,11 @@ const CustomCard = (props: {
               </Badge>
             </span>
           )}
-          <div className="hover:underline text-sm text-[#000] font-extrabold pt-3 text-[12px] text-right">
+
+          <div
+            onClick={() => router.push(`/hotel/${item._id}`)}
+            className="hover:underline text-sm text-[#000] font-extrabold pt-3 text-[12px] text-right"
+          >
             예약하기
           </div>
         </div>
