@@ -8,47 +8,19 @@ import CustomCard from "@/app/hotel/CustomCard";
 import SearchBar from "@/components/providers/SearchBar";
 
 import { getAxiosData } from "@/lib/axiosData";
-import { HotelImgType } from "@/lib/hotelType";
 import Spin from "@/components/ui/spin";
 
 const HotelList = () => {
   const [hList, setHList] = useState<string[]>([]);
-  const [imgLi, setImgLi] = useState<HotelImgType[]>([]);
-
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const imgList = async () => {
-      try {
-        const data = await getAxiosData(
-          "https://picsum.photos/v2/list?page=2&limit=6"
-        );
-        setImgLi(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    imgList();
-  }, []);
-
-  useEffect(() => {
-    if (imgLi.length === 0) return;
-
     const hotelList = async () => {
       try {
         const data = await getAxiosData("/api/hotel");
-        const imgDataSet = data?.hotels?.map(
-          (item: HotelImgType, idx: number) => {
-            const downloadUrl = imgLi[idx]?.download_url ?? null;
 
-            return {
-              ...item,
-              img: downloadUrl,
-            };
-          }
-        );
+        setHList(data.hotels);
 
-        setHList(imgDataSet);
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -58,7 +30,7 @@ const HotelList = () => {
     };
 
     hotelList();
-  }, [imgLi]);
+  }, []);
 
   return (
     <>

@@ -16,7 +16,7 @@ const CustomCard = (props: {
     ldgs_nm: string;
     ldgs_addr: string;
     pet_info_cn: string;
-    img: string;
+    imageUrl: string;
   };
 }) => {
   const { item } = props;
@@ -29,7 +29,7 @@ const CustomCard = (props: {
   return (
     <Card className="h-[250px]">
       <CardHeader className="p-0 m-0">
-        <img style={{ maxHeight: "100px" }} src={item.img} alt="@shadcn" />
+        <img style={{ maxHeight: "100px" }} src={item.imageUrl} alt="@shadcn" />
       </CardHeader>
       <CardContent className="py-1 m-0">
         <CardTitle className="pt-1 text-[17px]">{item.ldgs_nm}</CardTitle>
