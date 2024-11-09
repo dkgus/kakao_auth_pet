@@ -7,7 +7,8 @@ import ReservationCard from "../ReservationCard";
 import MultiIcon from "@/components/icons/MultiIcon";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
-const page = () => {
+
+const Page = () => {
   const router = useRouter();
 
   return (
@@ -26,4 +27,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
