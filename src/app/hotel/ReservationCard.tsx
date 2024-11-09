@@ -1,11 +1,8 @@
 "use client";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +31,10 @@ const formSchema = z.object({
 });
 
 const ReservationCard = () => {
+  const { data: session } = useSession();
+  console.log("session", session);
+  const [checked, setChecked] = useState<boolean>(false);
+  const [fUser, setFUser] = useState<string>("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,6 +66,7 @@ const ReservationCard = () => {
                       <Input
                         placeholder="예약자 성함을 입력해주세요"
                         {...field}
+                        value={session?.user?.name ?? ""}
                       />
                     </FormControl>
 
@@ -79,11 +81,15 @@ const ReservationCard = () => {
                   <FormItem>
                     <FormLabel>이용자 명</FormLabel>
                     <div className="items-top flex space-x-2">
-                      <Checkbox id="terms1" />
+                      <Checkbox
+                        id="terms1"
+                        checked={checked}
+                        onCheckedChange={(e: boolean) => setChecked(e)}
+                      />
                       <div className="grid gap-1.5 leading-none">
                         <label
                           htmlFor="terms1"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1"
                         >
                           예약자 명과 동일해요.
                         </label>
@@ -93,6 +99,8 @@ const ReservationCard = () => {
                       <Input
                         placeholder="이용자의 성함을 입력해주세요"
                         {...field}
+                        value={checked ? session?.user?.name ?? "" : fUser}
+                        onChange={(e) => setFUser(e.target.value)}
                       />
                     </FormControl>
 
@@ -106,7 +114,6 @@ const ReservationCard = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
     </div>
   );
