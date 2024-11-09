@@ -32,7 +32,7 @@ const DetailCard = () => {
 
   return (
     <div className="w-[50%]">
-      <Card className="h-[88vh]">
+      <Card className="h-[85vh]">
         <CardHeader>
           <img src={hotelData.imageUrl} />
         </CardHeader>

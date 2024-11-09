@@ -10,7 +10,7 @@ const CustomLogo = () => {
   return (
     <div className="font-bold flex" onClick={() => router.push("/")}>
       <MultiIcon icon={faPaw} />
-      <div className="pl-2">OH MY PET</div>
+      <div className="pl-2 font-extrabold">OH MY PET</div>
     </div>
   );
 };

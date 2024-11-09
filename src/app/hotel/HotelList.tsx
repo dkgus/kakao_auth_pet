@@ -42,7 +42,8 @@ const HotelList = () => {
               <div className="pl-[50%] pb-[10px]">
                 <Spin />
               </div>
-              호텔 리스트를 조회중입니다. 잠시만 기다려주세요...
+              리스트를 조회중입니다. <br />
+              잠시만 기다려주세요...
             </div>
           </div>
         ) : (
