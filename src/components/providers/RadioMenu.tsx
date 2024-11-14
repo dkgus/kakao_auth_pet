@@ -20,21 +20,21 @@ const RadioMenu = (props: {
   };
 
   return (
-    <Menubar className="w-[95px]">
+    <Menubar className="w-[100px] py-7">
       {type.map((item, idx) => (
         <div key={idx}>
           <MenubarMenu>
             <MenubarTrigger>
-              <MultiIcon
-                icon={iconType[item]}
-                onClick={() => {
-                  if (item === "hospital") {
-                    getHospital();
-                  } else {
-                    getHotel();
-                  }
-                }}
-              />
+              <div>
+                <MultiIcon
+                  icon={iconType[item]}
+                  onClick={() => {
+                    if (item === "hospital") getHospital();
+                    if (item === "hotel") getHotel();
+                  }}
+                />
+                <div className="text-[10px]">{idx === 0 ? "병원" : "호텔"}</div>
+              </div>
             </MenubarTrigger>
           </MenubarMenu>
         </div>

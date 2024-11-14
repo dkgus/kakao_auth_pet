@@ -27,7 +27,7 @@ const CustomCard = (props: {
     .split(",")
     .map((item) => item.trim());
   return (
-    <Card className="h-[250px]">
+    <Card className="h-[270px]">
       <CardHeader className="p-0 m-0">
         <img style={{ maxHeight: "100px" }} src={item.imageUrl} alt="@shadcn" />
       </CardHeader>
