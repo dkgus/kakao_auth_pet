@@ -19,7 +19,7 @@ const Page = () => {
           목록으로 이동
         </div>
       </div>
-      <div className="flex justify-between gap-[2%]">
+      <div className="flex flex-col justify-between gap-[2%] md:flex-row">
         <DetailCard />
         <ReservationCard />
       </div>

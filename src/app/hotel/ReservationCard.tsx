@@ -11,6 +11,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { addDays, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
@@ -73,149 +75,154 @@ const ReservationCard = () => {
   }
 
   return (
-    <div className="w-[50%]">
-      <Card className="h-[85vh]">
+    <div className="m-auto w-[95%] md:w-[50%] pt-3 md:pt-0">
+      <Card className="h-[45vh] md:h-[85vh]">
         <CardHeader className="text-center text-[1.1rem]">
           <div>예약</div>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>예약자 명</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="예약자 성함을 입력해주세요"
-                        {...field}
-                        value={session?.user?.name ?? ""}
-                      />
-                    </FormControl>
+              <ScrollArea className="h-[19vh] md:h-[60vh]">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem className="pb-10">
+                      <FormLabel>예약자 명</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="예약자 성함을 입력해주세요"
+                          {...field}
+                          value={session?.user?.name ?? ""}
+                        />
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="username2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>이용자 명</FormLabel>
-                    <div className="items-top flex space-x-2">
-                      <Checkbox
-                        id="terms1"
-                        checked={checked}
-                        onCheckedChange={(e: boolean) => setChecked(e)}
-                      />
-                      <div className="grid gap-1.5 leading-none">
-                        <label
-                          htmlFor="terms1"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1"
-                        >
-                          예약자 명과 동일해요.
-                        </label>
-                      </div>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder="이용자의 성함을 입력해주세요"
-                        {...field}
-                        value={
-                          checked ? session?.user?.name ?? "" : field.value
-                        }
-                        onChange={(e) => field.onChange(e)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <div className={cn("grid gap-2")}>
-                    <FormItem>
-                      <FormLabel>이용 날짜</FormLabel>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="username2"
+                  render={({ field }) => (
+                    <FormItem className="pb-10">
+                      <FormLabel>이용자 명</FormLabel>
                       <div className="items-top flex space-x-2">
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              id="date"
-                              variant={"outline"}
-                              className={cn(
-                                "w-[300px] justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon />
-                              {field.value?.from ? (
-                                field.value.to ? (
-                                  <>
-                                    {format(field.value.from, "LLL dd, y")} -{" "}
-                                    {format(field.value.to, "LLL dd, y")}
-                                  </>
+                        <Checkbox
+                          id="terms1"
+                          checked={checked}
+                          onCheckedChange={(e: boolean) => setChecked(e)}
+                        />
+                        <div className="grid gap-1.5 leading-none">
+                          <label
+                            htmlFor="terms1"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1"
+                          >
+                            예약자 명과 동일해요.
+                          </label>
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Input
+                          placeholder="이용자의 성함을 입력해주세요"
+                          {...field}
+                          value={
+                            checked ? session?.user?.name ?? "" : field.value
+                          }
+                          onChange={(e) => field.onChange(e)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <div className={cn("grid gap-2")}>
+                      <FormItem className="pb-10">
+                        <FormLabel>이용 날짜</FormLabel>
+                        <div className="items-top flex space-x-2">
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                id="date"
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[300px] justify-start text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon />
+                                {field.value?.from ? (
+                                  field.value.to ? (
+                                    <>
+                                      {format(field.value.from, "LLL dd, y")} -{" "}
+                                      {format(field.value.to, "LLL dd, y")}
+                                    </>
+                                  ) : (
+                                    format(field.value.from, "LLL dd, y")
+                                  )
                                 ) : (
-                                  format(field.value.from, "LLL dd, y")
-                                )
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              initialFocus
-                              mode="range"
-                              defaultMonth={field.value?.from}
-                              selected={field.value}
-                              onSelect={(range) => {
-                                if (range) {
-                                  form.setValue("date", {
-                                    from: range.from ?? new Date(),
-                                    to: range.to ?? new Date(),
-                                  });
-                                }
-                              }}
-                              numberOfMonths={2}
-                            />
-                          </PopoverContent>
-                        </Popover>
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                initialFocus
+                                mode="range"
+                                defaultMonth={field.value?.from}
+                                selected={field.value}
+                                onSelect={(range) => {
+                                  if (range) {
+                                    form.setValue("date", {
+                                      from: range.from ?? new Date(),
+                                      to: range.to ?? new Date(),
+                                    });
+                                  }
+                                }}
+                                numberOfMonths={2}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </FormItem>
+                    </div>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="visitMethod"
+                  render={({ field }) => (
+                    <FormItem className="pb-10">
+                      <FormLabel>방문 수단 선택</FormLabel>
+                      <div className="items-top flex space-x-2 flex-row">
+                        <RadioGroup
+                          defaultValue="NCAR"
+                          className="flex"
+                          onChange={(e) => field.onChange(e)}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="NCAR" id="NCAR" />
+                            <Label htmlFor="NCAR">대중교통</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="CAR" id="CAR" />
+                            <Label htmlFor="CAR">차</Label>
+                          </div>
+                        </RadioGroup>
                       </div>
                     </FormItem>
-                  </div>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="visitMethod"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>방문 수단 선택</FormLabel>
-                    <div className="items-top flex space-x-2 flex-row">
-                      <RadioGroup
-                        defaultValue="NCAR"
-                        className="flex"
-                        onChange={(e) => field.onChange(e)}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="NCAR" id="NCAR" />
-                          <Label htmlFor="NCAR">대중교통</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="CAR" id="CAR" />
-                          <Label htmlFor="CAR">차</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-                  </FormItem>
-                )}
-              />
+                  )}
+                />
+              </ScrollArea>
               <Button type="submit" className="w-[100%]">
                 예약하기
               </Button>

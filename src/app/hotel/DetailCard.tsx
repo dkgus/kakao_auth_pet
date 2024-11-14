@@ -31,10 +31,10 @@ const DetailCard = () => {
   };
 
   return (
-    <div className="w-[50%]">
-      <Card className="h-[85vh]">
+    <div className="m-auto w-[95%] md:w-[50%]">
+      <Card className="h-[35vh] md:h-[85vh]">
         <CardHeader>
-          <img src={hotelData.imageUrl} />
+          <img src={hotelData.imageUrl} className="h-[80px] md:h-[50%]" />
         </CardHeader>
         <CardContent>
           <CardTitle className="text-[17px]">{hotelData.ldgs_nm}</CardTitle>
