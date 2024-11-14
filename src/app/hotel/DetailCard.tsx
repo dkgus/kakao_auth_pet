@@ -37,7 +37,7 @@ const DetailCard = () => {
           <img src={hotelData.imageUrl} />
         </CardHeader>
         <CardContent>
-          <CardTitle>{hotelData.ldgs_nm}</CardTitle>
+          <CardTitle className="text-[17px]">{hotelData.ldgs_nm}</CardTitle>
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
