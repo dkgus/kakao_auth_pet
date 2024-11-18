@@ -1,6 +1,8 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { useParams } from "next/navigation";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,11 +33,13 @@ import { z } from "zod";
 
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { postAxiosData } from "@/lib/axiosData";
 
 const ReservationCard = () => {
+  const { id } = useParams() as { id: string };
+
   const { data: session } = useSession();
   const [checked, setChecked] = useState<boolean>(false);
-
   const formSchema = z.object({
     username: z.string().optional(),
     username2: z
@@ -64,15 +68,21 @@ const ReservationCard = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const obj = {
       username: session?.user?.name,
       username2: checked ? session?.user?.name : values.username2,
       date: format(values.date.from, "yyyy-MM-dd"),
       visitMethod: values.visitMethod,
+      userId: session?.userId,
+      hotelId: id,
     };
-    console.log("obj", obj);
-  }
+    try {
+      const data = await postAxiosData("/api/hotel", obj);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="m-auto w-[95%] md:w-[50%] pt-3 md:pt-0">
@@ -130,7 +140,9 @@ const ReservationCard = () => {
                           value={
                             checked ? session?.user?.name ?? "" : field.value
                           }
-                          onChange={(e) => field.onChange(e)}
+                          onChange={(e) => {
+                            if (!checked) field.onChange(e);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />

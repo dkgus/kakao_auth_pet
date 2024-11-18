@@ -8,6 +8,7 @@ import { NextAuthOptions } from "next-auth";
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
+    userId?: string;
   }
 }
 
@@ -40,6 +41,9 @@ const authOptions: NextAuthOptions = {
         await db.collection("User").insertOne({
           id: user.id,
           name: user.name,
+          hotels: [],
+          events: [],
+          commu: [],
         });
       }
       return true;
@@ -53,7 +57,8 @@ const authOptions: NextAuthOptions = {
       return token;
     },
 
-    async session({ session }) {
+    async session({ session, token }) {
+      session.userId = token.sub;
       return session;
     },
   },

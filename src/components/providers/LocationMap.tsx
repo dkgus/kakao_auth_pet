@@ -220,14 +220,15 @@ const LocationMap = () => {
 
   const MarkerItem = (
     item: LocationType,
-    mapInstance: MapFuncType | null
+    mapInstance: MapFuncType | null,
+    type: string
   ): MarkerType => {
     const lat: number = Number(item.fclty_la);
     const lng: number = Number(item.fclty_lo);
 
     return {
       position: { lat, lng },
-      img: { src: "https://cdn-icons-png.flaticon.com/128/3062/3062089.png" },
+      img: { src: type !== "hotel" ? "/hospital.png" : "/hotel.png" },
       onClick: () => moveLocation(mapInstance, lat, lng),
     };
   };
@@ -295,11 +296,17 @@ const LocationMap = () => {
             />
 
             {hospitalList?.map((item: LocationType, idx: number) => (
-              <CustomMaker key={idx} {...MarkerItem(item, mapInstance)} />
+              <CustomMaker
+                key={idx}
+                {...MarkerItem(item, mapInstance, "hospital")}
+              />
             ))}
 
             {hotelList?.map((item: LocationType, idx: number) => (
-              <CustomMaker key={idx} {...MarkerItem(item, mapInstance)} />
+              <CustomMaker
+                key={idx}
+                {...MarkerItem(item, mapInstance, "hotel")}
+              />
             ))}
           </Map>
         </>

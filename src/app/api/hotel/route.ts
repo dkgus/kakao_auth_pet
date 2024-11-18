@@ -40,3 +40,56 @@ export async function GET() {
     );
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const db = await getDb();
+    console.log("body", body);
+    const existingUser = await db
+      .collection("User")
+      .findOne({ id: body.userId });
+
+    if (!existingUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (!ObjectId.isValid(body.hotelId)) {
+      return NextResponse.json(
+        { error: "Invalid hotel ID format" },
+        { status: 400 }
+      );
+    }
+
+    const hotelId = new ObjectId(body.hotelId);
+
+    const hotelInfo = await db
+      .collection("HotelList")
+      .findOne({ _id: hotelId });
+    if (!hotelInfo) {
+      return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
+    }
+
+    const updatedUser = await db.collection("User").updateOne(
+      { id: body.userId },
+      {
+        $addToSet: { hotelList: hotelInfo },
+      }
+    );
+
+    if (updatedUser.modifiedCount === 0) {
+      return NextResponse.json(
+        { error: "Failed to update user's hotel list" },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json({ code: 200, message: "CREATE_HOTEL" });
+    }
+  } catch (err) {
+    console.error("Error parsing body:", err);
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
+}
