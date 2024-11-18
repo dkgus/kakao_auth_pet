@@ -1,17 +1,17 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import {
+  faBolt,
+  faCloud,
+  faCloudRain,
+  faDroplet,
+  faSmog,
+  faSnowflake,
+  faSun,
+  faTornado,
+} from "@fortawesome/free-solid-svg-icons";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { MapFuncType } from "./mapType";
-import {
-  faSun,
-  faBolt,
-  faDroplet,
-  faCloudRain,
-  faCloud,
-  faSnowflake,
-  faSmog,
-  faTornado,
-} from "@fortawesome/free-solid-svg-icons";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 interface WeatherDetail {
   title: string;
   icon: IconDefinition;
@@ -94,4 +94,10 @@ export const moveLocation = (
   lo: number
 ) => {
   return ref?.panTo(new kakao.maps.LatLng(Number(la), Number(lo)));
+};
+
+export const msgType: { [key: string]: string } = {
+  CREATE_HOTEL: "호텔 예약이 완료되었습니다.",
+  CREATE_HOTEL_FAIL: "호텔 예약에 실패했습니다. 다시 시도해주세요. ",
+  CREATE_HOTEL_FAIL_DEP: "동일한 호텔은 예약할 수 없습니다.",
 };

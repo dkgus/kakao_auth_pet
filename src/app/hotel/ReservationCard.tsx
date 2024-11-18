@@ -1,10 +1,10 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -18,15 +18,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { addDays, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import { cn, msgType } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,6 +34,7 @@ import { z } from "zod";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { postAxiosData } from "@/lib/axiosData";
+import { toast } from "sonner";
 
 const ReservationCard = () => {
   const { id } = useParams() as { id: string };
@@ -77,10 +78,12 @@ const ReservationCard = () => {
       userId: session?.userId,
       hotelId: id,
     };
+    const { status, message } = await postAxiosData("/api/hotel", obj);
     try {
-      const data = await postAxiosData("/api/hotel", obj);
+      if (status) toast(msgType[message]);
     } catch (err) {
       console.log(err);
+      if (status !== 200) toast(msgType[message]);
     }
   };
 

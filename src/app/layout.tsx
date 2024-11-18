@@ -7,6 +7,8 @@ import localFont from "next/font/local";
 import CustomLogo from "@/components/providers/CustomLogo";
 import { mainBgColor } from "@/lib/constants";
 
+import { Toaster } from "@/components/ui/sonner";
+
 import "./globals.css";
 
 const geistSans = localFont({
@@ -55,6 +57,7 @@ export default function RootLayout({
             </div>
           </div>
           {children}
+          <Toaster />
         </AuthSession>
       </body>
     </html>

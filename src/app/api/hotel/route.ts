@@ -78,12 +78,12 @@ export async function POST(req: Request) {
     );
 
     if (updatedUser.modifiedCount === 0) {
-      return NextResponse.json(
-        { error: "Failed to update user's hotel list" },
-        { status: 500 }
-      );
+      return NextResponse.json({
+        status: 400,
+        message: "CREATE_HOTEL_FAIL_DEP",
+      });
     } else {
-      return NextResponse.json({ code: 200, message: "CREATE_HOTEL" });
+      return NextResponse.json({ status: 200, message: "CREATE_HOTEL" });
     }
   } catch (err) {
     console.error("Error parsing body:", err);
