@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { mainBgColor } from "@/lib/constants";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const CustomCard = (props: {
   item: {
@@ -27,9 +28,17 @@ const CustomCard = (props: {
     .split(",")
     .map((item) => item.trim());
   return (
-    <Card className="h-[270px]">
+    <Card className="h-[260px]">
       <CardHeader className="p-0 m-0">
-        <img style={{ maxHeight: "100px" }} src={item.imageUrl} alt="@shadcn" />
+        <Image
+          priority
+          src={item.imageUrl}
+          alt="@hotelImg"
+          width={500}
+          height={120}
+          className="rounded-t-lg"
+          style={{ objectFit: "cover", maxHeight: "120px" }}
+        />
       </CardHeader>
       <CardContent className="py-1 m-0">
         <CardTitle className="pt-1 text-[17px]">{item.ldgs_nm}</CardTitle>

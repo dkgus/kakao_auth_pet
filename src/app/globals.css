@@ -4,10 +4,10 @@
 
 body {
   font-family: NanumSquareNeoBold, Arial, Helvetica, sans-serif;
-  -webkit-user-select: none;
+  /* -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
+  user-select: none; */
 }
 
 @font-face {

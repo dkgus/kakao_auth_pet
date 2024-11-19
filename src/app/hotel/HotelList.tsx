@@ -13,29 +13,33 @@ import Spin from "@/components/ui/spin";
 const HotelList = () => {
   const [hList, setHList] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+
+  const fetchHotels = async () => {
+    setLoading(true);
+    try {
+      const data = await getAxiosData(`/api/hotel?page=${page}`);
+
+      if (page !== 1 && data.hotels) {
+        setHList((prevHotels) => [...prevHotels, ...data.hotels]);
+      } else if (page === 1 && data.hotels) {
+        setHList(data.hotels);
+      }
+    } catch (err) {
+      console.error("호텔 데이터 요청 실패:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const hotelList = async () => {
-      try {
-        const data = await getAxiosData("/api/hotel");
-
-        setHList(data.hotels);
-
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setHList([]);
-        setLoading(true);
-      }
-    };
-
-    hotelList();
-  }, []);
+    fetchHotels();
+  }, [page]);
 
   return (
     <>
       <SearchBar />
-      <ScrollArea className="h-[90%] w-[100%] rounded-md border p-4">
+      <ScrollArea className="h-[91%] w-[100%] rounded-md border p-4">
         {loading ? (
           <div className="relative h-[70vh]">
             <div className="text-[gray] absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 ">
@@ -50,7 +54,6 @@ const HotelList = () => {
           <>
             {" "}
             <div className="flex flex-wrap flex-row gap-5">
-              {/* 모바일 버전에서는 2개, 그 이상부턴 6개씩 */}
               {hList?.map((item, idx) => (
                 <div
                   key={idx}
@@ -61,7 +64,12 @@ const HotelList = () => {
               ))}
             </div>
             <div>
-              <Button className="w-[100%] mt-5">MORE</Button>
+              <Button
+                className="w-[100%] mt-5"
+                onClick={() => setPage((prev) => prev + 1)}
+              >
+                MORE
+              </Button>
             </div>
           </>
         )}

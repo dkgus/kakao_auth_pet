@@ -6,20 +6,32 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { imgURL } from "@/lib/constants";
 
-export async function GET() {
+const PAGE_LIMIT = 6;
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const page = parseInt(url.searchParams.get("page") || "1", 10);
+  const limit = PAGE_LIMIT;
+
   const db = await getDb();
   const hotelListCollection = db.collection("HotelList");
 
-  const hotels = await hotelListCollection.find().toArray();
-  const access = hotels
-    .filter((v) => !v.pet_info_cn.includes("['반려동물 동반 불가']"))
-    .slice(0, 6);
-
   try {
-    const { data: images } = await axios.get(imgURL);
+    const hotels = await hotelListCollection
+      .find({
+        pet_info_cn: {
+          $not: { $elemMatch: { $eq: "['반려동물 동반 불가']" } },
+        },
+      })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .toArray();
+
+    const { data: images } = await axios.get(
+      `${imgURL}?page=${page}&limit=${limit}&w=500&h=120&fit=crop`
+    );
 
     const updatedHotels = await Promise.all(
-      access.map(async (hotel, index) => {
+      hotels.map(async (hotel, index) => {
         const imageUrl = images[index]?.download_url || "";
 
         await hotelListCollection.updateOne(
@@ -33,14 +45,13 @@ export async function GET() {
 
     return NextResponse.json({ hotels: updatedHotels });
   } catch (err) {
-    console.error("이미지 가져오기 오류:", err);
+    console.error("데이터 로드 오류:", err);
     return NextResponse.json(
-      { error: "이미지를 가져오는 중 오류가 발생했습니다." },
+      { error: "데이터 로드 중 오류가 발생했습니다." },
       { status: 500 }
     );
   }
 }
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
