@@ -75,8 +75,10 @@ const DetailCard = () => {
             <p className="pt-2">
               우리 호텔이 제공하는 서비스는 아래와 같습니다.
             </p>
-            {feat.map((i) => (
-              <Badge className={`${mainBgColor} mr-1 mt-3`}>{i}</Badge>
+            {feat.map((i, idx) => (
+              <span key={idx}>
+                <Badge className={`${mainBgColor} mr-1 mt-3`}>{i}</Badge>
+              </span>
             ))}
           </div>
         </CardContent>
