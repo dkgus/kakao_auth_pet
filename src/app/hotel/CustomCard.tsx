@@ -34,7 +34,7 @@ const CustomCard = (props: {
           priority
           src={item.imageUrl}
           alt="@hotelImg"
-          width={500}
+          width={800}
           height={120}
           className="rounded-t-lg"
           style={{ objectFit: "cover", maxHeight: "120px" }}
@@ -45,22 +45,23 @@ const CustomCard = (props: {
         <div className="text-[13px] text-[gray]">위치: {item.ldgs_addr}</div>
       </CardContent>
       <CardFooter>
-        <div>
-          {featItems.slice(0, 3).map((item, idx) => (
-            <span key={idx}>
-              <Badge className={`${mainBgColor} mr-[2px]`}>{item}</Badge>
-            </span>
-          ))}
-          {featItems.length > 3 && (
-            <span className="pl-1">
-              <Badge
-                className={`${mainBgColor} text-[10px] text-[#000] hover:text-[#fff]`}
-              >
-                + {featItems.length - 3}
-              </Badge>
-            </span>
-          )}
-
+        <div className="w-[100%]">
+          <div>
+            {featItems.slice(0, 3).map((item, idx) => (
+              <span key={idx}>
+                <Badge className={`${mainBgColor} mr-[2px]`}>{item}</Badge>
+              </span>
+            ))}
+            {featItems.length > 3 && (
+              <span className="pl-1">
+                <Badge
+                  className={`${mainBgColor} text-[10px] text-[#000] hover:text-[#fff]`}
+                >
+                  + {featItems.length - 3}
+                </Badge>
+              </span>
+            )}
+          </div>
           <div
             onClick={() => router.push(`/hotel/${item._id}`)}
             className="hover:underline text-sm text-[#000] font-extrabold pt-3 text-[12px] text-right"

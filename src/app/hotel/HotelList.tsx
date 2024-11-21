@@ -40,7 +40,7 @@ const HotelList = () => {
     <>
       <SearchBar />
       <ScrollArea className="h-[91%] w-[100%] rounded-md border p-4">
-        {loading ? (
+        {loading && page === 1 ? (
           <div className="relative h-[70vh]">
             <div className="text-[gray] absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 ">
               <div className="pl-[50%] pb-[10px]">
@@ -68,7 +68,7 @@ const HotelList = () => {
                 className="w-[100%] mt-5"
                 onClick={() => setPage((prev) => prev + 1)}
               >
-                MORE
+                {loading ? <Spin /> : "MORE"}
               </Button>
             </div>
           </>
