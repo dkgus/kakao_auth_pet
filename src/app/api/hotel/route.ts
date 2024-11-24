@@ -6,22 +6,32 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { imgURL } from "@/lib/constants";
 
+interface QueryType {
+  pet_info_cn?: { $not: { $regex: string } };
+  ldgs_nm?: { $regex: string; $options: string };
+}
+
 const PAGE_LIMIT = 6;
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const page = parseInt(url.searchParams.get("page") || "1", 10);
+  const searchQuery = url.searchParams.get("name") || "";
   const limit = PAGE_LIMIT;
-
+  const query: QueryType = {};
   const db = await getDb();
   const hotelListCollection = db.collection("HotelList");
 
   try {
+    query.pet_info_cn = {
+      $not: { $regex: "\\['반려동물 동반 불가'\\]" },
+    };
+
+    if (searchQuery) {
+      query.ldgs_nm = { $regex: searchQuery, $options: "i" };
+    }
+
     const hotels = await hotelListCollection
-      .find({
-        pet_info_cn: {
-          $not: { $elemMatch: { $eq: "['반려동물 동반 불가']" } },
-        },
-      })
+      .find(query)
       .skip((page - 1) * limit)
       .limit(limit)
       .toArray();
@@ -56,7 +66,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const db = await getDb();
-    console.log("body", body);
     const existingUser = await db
       .collection("User")
       .findOne({ id: body.userId });

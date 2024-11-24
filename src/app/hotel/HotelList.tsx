@@ -1,27 +1,32 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getAxiosData } from "@/lib/axiosData";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import CustomCard from "@/app/hotel/CustomCard";
 
-import SearchBar from "@/components/providers/SearchBar";
-
-import { getAxiosData } from "@/lib/axiosData";
 import Spin from "@/components/ui/spin";
+import CustomCard from "@/app/hotel/CustomCard";
+import SearchBar from "@/components/providers/SearchBar";
 
 const HotelList = () => {
   const [hList, setHList] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
+  const [word, setWord] = useState<string>("");
+  const [enter, setOnEnter] = useState<string>("");
 
   const fetchHotels = async () => {
     setLoading(true);
     try {
-      const data = await getAxiosData(`/api/hotel?page=${page}`);
+      const queryString = enter ? `&name=${enter}` : "";
+      const data = await getAxiosData(`/api/hotel?page=${page}${queryString}`);
 
       if (page !== 1 && data.hotels) {
-        setHList((prevHotels) => [...prevHotels, ...data.hotels]);
+        enter !== ""
+          ? setHList(data.hotels)
+          : setHList((prevHotels) => [...prevHotels, ...data.hotels]);
       } else if (page === 1 && data.hotels) {
         setHList(data.hotels);
       }
@@ -34,11 +39,20 @@ const HotelList = () => {
 
   useEffect(() => {
     fetchHotels();
-  }, [page]);
+  }, [page, enter]);
+  useEffect(() => {
+    setPage(1);
+  }, [enter]);
 
   return (
     <>
-      <SearchBar />
+      <SearchBar
+        value={word}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setWord(e.target.value)
+        }
+        setEnter={setOnEnter}
+      />
       <ScrollArea className="h-[91%] w-[100%] rounded-md border p-4">
         {loading && page === 1 ? (
           <div className="relative h-[70vh]">
@@ -64,12 +78,14 @@ const HotelList = () => {
               ))}
             </div>
             <div>
-              <Button
-                className="w-[100%] mt-5"
-                onClick={() => setPage((prev) => prev + 1)}
-              >
-                {loading ? <Spin /> : "MORE"}
-              </Button>
+              {hList.length >= 6 ? (
+                <Button
+                  className="w-[100%] mt-5"
+                  onClick={() => setPage((prev) => prev + 1)}
+                >
+                  {loading ? <Spin /> : "MORE"}
+                </Button>
+              ) : null}
             </div>
           </>
         )}

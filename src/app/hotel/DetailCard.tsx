@@ -12,6 +12,7 @@ import { getAxiosData } from "@/lib/axiosData";
 //import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { mainBgColor } from "@/lib/constants";
+import Image from "next/image";
 
 const DetailCard = () => {
   const { id } = useParams() as { id: string };
@@ -21,7 +22,6 @@ const DetailCard = () => {
     imageUrl: string;
     pet_info_cn: string;
   }>({ ldgs_nm: "", imageUrl: "", pet_info_cn: "" });
-  console.log("hotelData", hotelData);
 
   useEffect(() => {
     getData();
@@ -51,16 +51,18 @@ const DetailCard = () => {
     <div className="m-auto w-[95%] md:w-[50%]">
       <Card className="h-[35vh] md:h-[85vh]">
         <CardHeader>
-          <img src={hotelData.imageUrl} className="h-[80px] md:h-[50%]" />
-
-          {/* <Image
-            priority
-            src={hotelData.imageUrl || "/path/to/default-image.jpg"}
-            alt="hotelImg"
-            className="h-[120px] md:h-[50%]"
-            width={800}
-            height={120}
-          /> */}
+          {hotelData.imageUrl ? (
+            <Image
+              priority
+              src={hotelData.imageUrl}
+              alt="hotelImg"
+              className="h-[120px] md:h-[50%]"
+              width={800}
+              height={120}
+            />
+          ) : (
+            <>이미지를 로드중입니다.</>
+          )}
         </CardHeader>
         <CardContent>
           <CardTitle className="text-[17px]">{hotelData.ldgs_nm}</CardTitle>

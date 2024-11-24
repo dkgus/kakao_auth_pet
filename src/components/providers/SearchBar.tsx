@@ -1,6 +1,13 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-const SearchBar = () => {
+import { ChangeEvent, KeyboardEvent } from "react";
+
+interface Props {
+  value: string;
+  onChange: (value: React.ChangeEvent<HTMLInputElement>) => void;
+  setEnter: (value: string) => void;
+}
+const SearchBar = ({ onChange, value, setEnter }: Props) => {
   function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
       <svg
@@ -26,9 +33,14 @@ const SearchBar = () => {
     <div className="flex items-center w-full space-x-2 rounded-lg border px-6 py-2 mb-2">
       <SearchIcon className="h-4 w-4" />
       <Input
+        onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e)}
         type="search"
-        placeholder="호텔명을 입력해주세요."
-        className="w-full border-0 h-8 font-semibold"
+        value={value}
+        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === "Enter") setEnter(value);
+        }}
+        placeholder="호텔명을 입력 후 Enter를 눌러주세요."
+        className="w-full border-0 h-8 font-semibold "
         style={{ outline: "none", boxShadow: "none" }}
       />
     </div>

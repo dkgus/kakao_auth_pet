@@ -41,12 +41,19 @@ const CustomCard = (props: {
         />
       </CardHeader>
       <CardContent className="py-1 m-0">
-        <CardTitle className="pt-1 text-[17px]">{item.ldgs_nm}</CardTitle>
-        <div className="text-[13px] text-[gray]">위치: {item.ldgs_addr}</div>
+        <CardTitle className="pt-1 text-[14px] md:text-[17px]">
+          {item.ldgs_nm}
+        </CardTitle>
+        <div className="text-[9.9px] md:text-[13px] text-[gray]">
+          위치: {item.ldgs_addr}
+        </div>
       </CardContent>
       <CardFooter>
         <div className="w-[100%]">
-          <div>
+          <div
+            className="min-h-[48px] max-h-[48px] md:min-h-[35px] md:max-h-[35px]"
+            //style={{ minHeight: "35px", maxHeight: "35px" }}
+          >
             {featItems.slice(0, 3).map((item, idx) => (
               <span key={idx}>
                 <Badge className={`${mainBgColor} mr-[2px]`}>{item}</Badge>
@@ -55,7 +62,7 @@ const CustomCard = (props: {
             {featItems.length > 3 && (
               <span className="pl-1">
                 <Badge
-                  className={`${mainBgColor} text-[10px] text-[#000] hover:text-[#fff]`}
+                  className={`${mainBgColor} text-[8px] md:text-[10px] text-[#000] hover:text-[#fff]`}
                 >
                   + {featItems.length - 3}
                 </Badge>
@@ -64,7 +71,7 @@ const CustomCard = (props: {
           </div>
           <div
             onClick={() => router.push(`/hotel/${item._id}`)}
-            className="hover:underline text-sm text-[#000] font-extrabold pt-3 text-[12px] text-right"
+            className="hover:underline text-sm text-[#000] font-extrabold pt-1 md:pt-3 text-[12px] text-right"
           >
             예약하기
           </div>
