@@ -24,9 +24,11 @@ const HotelList = () => {
       const data = await getAxiosData(`/api/hotel?page=${page}${queryString}`);
 
       if (page !== 1 && data.hotels) {
-        enter !== ""
-          ? setHList(data.hotels)
-          : setHList((prevHotels) => [...prevHotels, ...data.hotels]);
+        if (enter !== "") {
+          setHList(data.hotels);
+        } else {
+          setHList((prevHotels) => [...prevHotels, ...data.hotels]);
+        }
       } else if (page === 1 && data.hotels) {
         setHList(data.hotels);
       }
