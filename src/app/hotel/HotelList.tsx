@@ -22,15 +22,10 @@ const HotelList = () => {
     try {
       const queryString = enter ? `&name=${enter}` : "";
       const data = await getAxiosData(`/api/hotel?page=${page}${queryString}`);
-
-      if (page !== 1 && data.hotels) {
-        if (enter !== "") {
-          setHList(data.hotels);
-        } else {
-          setHList((prevHotels) => [...prevHotels, ...data.hotels]);
-        }
-      } else if (page === 1 && data.hotels) {
+      if (page === 1) {
         setHList(data.hotels);
+      } else {
+        setHList((prevHotels) => [...prevHotels, ...data.hotels]);
       }
     } catch (err) {
       console.error("호텔 데이터 요청 실패:", err);
@@ -42,6 +37,7 @@ const HotelList = () => {
   useEffect(() => {
     fetchHotels();
   }, [page, enter]);
+
   useEffect(() => {
     setPage(1);
   }, [enter]);
