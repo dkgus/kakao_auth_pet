@@ -16,13 +16,13 @@ const DropdownMenu = (props: {
   const direction = type === "l_down" ? "left-0" : "right-0";
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleOptionClick = async (option: string) => {
     const actions: { [key: string]: () => Promise<void> | void } = {
       event: () => router.push("/event"),
       hotel: () => router.push("/hotel"),
+      myPage: () => router.push(`/my-page/${data?.userId}`),
       logout: async () => await signOut(),
     };
 

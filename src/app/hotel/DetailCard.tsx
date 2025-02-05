@@ -23,6 +23,14 @@ const DetailCard = () => {
     pet_info_cn: string;
   }>({ ldgs_nm: "", imageUrl: "", pet_info_cn: "" });
 
+  const getData = async () => {
+    try {
+      const data = await getAxiosData(`/api/hotel/${id}`);
+      setHotelData(data.hotel);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   useEffect(() => {
     getData();
   }, []);
@@ -37,15 +45,6 @@ const DetailCard = () => {
       .split(",");
     setFeat(options);
   }, [hotelData]);
-
-  const getData = async () => {
-    try {
-      const data = await getAxiosData(`/api/hotel/${id}`);
-      setHotelData(data.hotel);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   return (
     <div className="m-auto w-[95%] md:w-[50%]">
