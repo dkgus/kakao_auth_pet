@@ -82,6 +82,7 @@ export async function POST(req: Request) {
     }
 
     const hotelId = new ObjectId(body.hotelId);
+    const reserveId = new ObjectId();
 
     const hotelInfo = await db
       .collection("HotelList")
@@ -89,11 +90,16 @@ export async function POST(req: Request) {
     if (!hotelInfo) {
       return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
     }
+    const obj = {
+      ...body,
+      reserveId,
+    };
+    const totalInfo = { ...obj, hotelInfo };
 
     const updatedUser = await db.collection("User").updateOne(
       { id: body.userId },
       {
-        $addToSet: { hotelList: hotelInfo },
+        $addToSet: { hotelList: totalInfo },
       }
     );
 

@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -13,18 +12,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -34,48 +26,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getAxiosData } from "@/lib/axiosData";
+import { useParams } from "next/navigation";
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-];
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+export type tableType = {
+  revId: string;
+  revName: string;
+  revCom: string;
+  revDate: string;
+  revStatus: string;
+  visitMethod: "car" | "walking";
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<tableType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -99,14 +62,44 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
+    accessorKey: "revId",
+    header: () => <div className="text-right">예약번호</div>,
+    cell: ({ row }) => {
+      //const amount = parseFloat(row.getValue("revId"));
+
+      // const formatted = new Intl.NumberFormat("en-US", {
+      //   style: "currency",
+      //   currency: "USD",
+      // }).format(amount);
+
+      //return <div className="text-right font-medium">{formatted}</div>;
+
+      return <div className="capitalize">{row.getValue("revId")}</div>;
+    },
+  },
+  {
+    accessorKey: "revName",
     header: "예약자명",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">{row.getValue("revName")}</div>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "revCom",
+    header: () => <div className="text-right">예약 업체</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("revCom"));
+
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "revDate",
     header: ({ column }) => {
       return (
         <Button
@@ -118,31 +111,16 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("revDate")}</div>
+    ),
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">예약번호</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "amount",
+    accessorKey: "revStatus",
     header: () => <div className="text-right">예약 처리현황</div>,
-    // 예약완료
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
-      // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -151,46 +129,68 @@ export const columns: ColumnDef<Payment>[] = [
       return <div className="text-right font-medium">{formatted}</div>;
     },
   },
+  {
+    accessorKey: "visitMethod",
+    header: () => <div className="text-right">방문 수단</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("visitMethod"));
 
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
+    },
+  },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="">
+          <button>수정</button>
+          <button>삭제</button>
+        </div>
       );
     },
   },
 ];
 
 const MultiTable = () => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const { id } = useParams() as { id: string };
+  const [sorting, setSorting] = useState<SortingState>([]);
 
-  React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const [dataState, setData] = useState<tableType[]>([]);
+
+  const getData = async () => {
+    const data = await getAxiosData(`/api/myPage/${id}`);
+
+    const newArr = data.data.hotelList.map((i) => {
+      return {
+        revId: i.reserveId,
+        revName: i.revName,
+        revCom: i.hotelInfo.ldgs_nm,
+        visitMethod: i.visitMethod,
+        revDate: i.date,
+        revStatus: i.revStatus,
+      };
+    });
+
+    console.log(newArr);
+    setData(newArr);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  console.log(dataState);
 
   const table = useReactTable({
-    data,
+    data: dataState,
     columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -203,6 +203,7 @@ const MultiTable = () => {
       rowSelection,
     },
   });
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">

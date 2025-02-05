@@ -43,7 +43,7 @@ const ReservationCard = () => {
   const [checked, setChecked] = useState<boolean>(false);
   const formSchema = z.object({
     username: z.string().optional(),
-    username2: z
+    revName: z
       .string()
       .trim()
       .refine((value) => checked || value.length >= 2, {
@@ -60,7 +60,7 @@ const ReservationCard = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: session?.user?.name ?? "",
-      username2: "",
+      revName: "",
       date: {
         from: new Date(),
         to: addDays(new Date(), 2),
@@ -72,7 +72,7 @@ const ReservationCard = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const obj = {
       username: session?.user?.name,
-      username2: checked ? session?.user?.name : values.username2,
+      revName: checked ? session?.user?.name : values.revName,
       date: format(values.date.from, "yyyy-MM-dd"),
       visitMethod: values.visitMethod,
       userId: session?.userId,
@@ -117,7 +117,7 @@ const ReservationCard = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="username2"
+                  name="revName"
                   render={({ field }) => (
                     <FormItem className="pb-10">
                       <FormLabel>이용자 명</FormLabel>
