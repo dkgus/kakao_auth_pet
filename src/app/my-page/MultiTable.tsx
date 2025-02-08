@@ -16,6 +16,7 @@ import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -26,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAxiosData } from "@/lib/axiosData";
+import { deleteAxiosData, getAxiosData } from "@/lib/axiosData";
 import { useParams } from "next/navigation";
 
 export type tableType = {
@@ -34,7 +35,6 @@ export type tableType = {
   revName: string;
   revCom: string;
   revDate: string;
-  revStatus: string;
   visitMethod: "car" | "walking";
 };
 
@@ -43,140 +43,140 @@ export type dataTye = {
   revName: string;
   visitMethod: string;
   date: string;
-  revStatus: string;
   hotelInfo: { ldgs_nm: string };
 };
-
-export const columns: ColumnDef<tableType>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "revId",
-    header: () => <div className="text-right">예약번호</div>,
-    cell: ({ row }) => {
-      //const amount = parseFloat(row.getValue("revId"));
-
-      // const formatted = new Intl.NumberFormat("en-US", {
-      //   style: "currency",
-      //   currency: "USD",
-      // }).format(amount);
-
-      //return <div className="text-right font-medium">{formatted}</div>;
-
-      return <div className="capitalize">{row.getValue("revId")}</div>;
-    },
-  },
-  {
-    accessorKey: "revName",
-    header: "예약자명",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("revName")}</div>
-    ),
-  },
-  {
-    accessorKey: "revCom",
-    header: () => <div className="text-right">예약 업체</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("revCom"));
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "revDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          예약날짜
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("revDate")}</div>
-    ),
-  },
-  {
-    accessorKey: "revStatus",
-    header: () => <div className="text-right">예약 처리현황</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "visitMethod",
-    header: () => <div className="text-right">방문 수단</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("visitMethod"));
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: (
-      {
-        //row
-      }
-    ) => {
-      return (
-        <div className="">
-          <button>수정</button>
-          <button>삭제</button>
-        </div>
-      );
-    },
-  },
-];
 
 const MultiTable = () => {
   const { id } = useParams() as { id: string };
   const [sorting, setSorting] = useState<SortingState>([]);
-
   useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [dataState, setData] = useState<tableType[]>([]);
+
+  const columns: ColumnDef<tableType>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "revId",
+      header: () => <div>예약번호</div>,
+      size: 100,
+
+      cell: ({ row }) => {
+        return <div className="capitalize">{row.getValue("revId")}</div>;
+      },
+    },
+    {
+      accessorKey: "revName",
+      header: "예약자명",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("revName")}</div>
+      ),
+    },
+    {
+      accessorKey: "revCom",
+      header: () => <div>예약 업체</div>,
+      cell: ({ row }) => {
+        return <div className="font-medium">{row.getValue("revCom")}</div>;
+      },
+    },
+    {
+      accessorKey: "revDate",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            예약 날짜
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("revDate")}</div>
+      ),
+    },
+    {
+      accessorKey: "revPeriod",
+      header: () => <div>참여/숙박 기간</div>,
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("amount"));
+
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(amount);
+
+        return <div className="font-medium">{row.getValue("")}</div>;
+      },
+    },
+    {
+      accessorKey: "visitMethod",
+      header: () => <div>방문 수단</div>,
+      cell: ({ row }) => {
+        const type: string = row.getValue("visitMethod");
+        const val = type === "NCAR" ? "도보" : "차량";
+        return (
+          <Badge variant={val === "도보" ? "outline" : "default"}>
+            <div className="font-medium">{val}</div>
+          </Badge>
+        );
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const reserveId = row.original.revId;
+        return (
+          <div className="">
+            <Button className="mr-1 h-6 px-3">수정</Button>
+            <Button
+              className="mr-1 h-6 px-3 bg-[red] hover:bg-[red] "
+              onClick={async () => {
+                const key = { userId: id, reserveId };
+                const result = await deleteAxiosData(
+                  `/api/myPage/${key.reserveId}`,
+                  key
+                );
+                try {
+                  if (result.code === 200) {
+                    //TODO: alert 수정 하기
+                    alert("삭제가 완료되었습니다");
+                    getData();
+                  }
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+            >
+              삭제
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
 
   const getData = async () => {
     const data = await getAxiosData(`/api/myPage/${id}`);
@@ -188,11 +188,9 @@ const MultiTable = () => {
         revCom: i.hotelInfo.ldgs_nm,
         visitMethod: i.visitMethod,
         revDate: i.date,
-        revStatus: i.revStatus,
       };
     });
 
-    console.log(newArr);
     setData(newArr);
   };
 

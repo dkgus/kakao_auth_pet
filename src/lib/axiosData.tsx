@@ -17,3 +17,14 @@ export const postAxiosData = async (url: string, data: object) => {
   });
   return res.data;
 };
+
+export const deleteAxiosData = async (
+  url: string,
+  key: { userId: string; reserveId: string }
+) => {
+  const res = await axios.delete(url, {
+    headers: headerOption,
+    data: key,
+  });
+  return res.data;
+};
