@@ -38,6 +38,15 @@ export type tableType = {
   visitMethod: "car" | "walking";
 };
 
+export type dataTye = {
+  reserveId: string;
+  revName: string;
+  visitMethod: string;
+  date: string;
+  revStatus: string;
+  hotelInfo: { ldgs_nm: string };
+};
+
 export const columns: ColumnDef<tableType>[] = [
   {
     id: "select",
@@ -146,7 +155,11 @@ export const columns: ColumnDef<tableType>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: (
+      {
+        //row
+      }
+    ) => {
       return (
         <div className="">
           <button>수정</button>
@@ -168,7 +181,7 @@ const MultiTable = () => {
   const getData = async () => {
     const data = await getAxiosData(`/api/myPage/${id}`);
 
-    const newArr = data.data.hotelList.map((i) => {
+    const newArr = data.data.hotelList.map((i: dataTye) => {
       return {
         revId: i.reserveId,
         revName: i.revName,
@@ -186,8 +199,6 @@ const MultiTable = () => {
   useEffect(() => {
     getData();
   }, []);
-
-  console.log(dataState);
 
   const table = useReactTable({
     data: dataState,
