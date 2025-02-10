@@ -9,8 +9,17 @@ export type selectedHotel = {
   userId: string;
   hotelId: string;
   reserveId: string;
-  hotelInfo: any;
+  hotelInfo: {
+    _id: object;
+    ldgs_nm: string;
+    ctprvn_nm: string;
+    gugun_nm: string;
+    ldgs_addr: string;
+    pet_info_cn: string;
+    imageUrl: string;
+  };
 };
+
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
