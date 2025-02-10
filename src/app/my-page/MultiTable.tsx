@@ -12,6 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
 import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,14 @@ import {
 } from "@/components/ui/table";
 import { deleteAxiosData, getAxiosData } from "@/lib/axiosData";
 import { useParams } from "next/navigation";
+import {
+  faCopy,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { toast } from "sonner";
+import { msgType } from "@/lib/utils";
+import CustomTooltip from "@/components/providers/CustomTooltip";
 
 export type tableType = {
   revId: string;
@@ -82,7 +91,18 @@ const MultiTable = () => {
       size: 100,
 
       cell: ({ row }) => {
-        return <div className="capitalize">{row.getValue("revId")}</div>;
+        return (
+          <CustomTooltip
+            icon={faCopy}
+            btnClass=""
+            type="clipboard"
+            value={row.getValue("revId")}
+            onClick={() => {
+              navigator.clipboard.writeText(row.original.revId);
+              toast("복사 완료");
+            }}
+          />
+        );
       },
     },
     {
@@ -120,12 +140,12 @@ const MultiTable = () => {
       accessorKey: "revPeriod",
       header: () => <div>참여/숙박 기간</div>,
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("amount"));
+        //const amount = parseFloat(row.getValue("amount"));
 
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(amount);
+        // const formatted = new Intl.NumberFormat("en-US", {
+        //   style: "currency",
+        //   currency: "USD",
+        // }).format(amount);
 
         return <div className="font-medium">{row.getValue("")}</div>;
       },
@@ -150,9 +170,18 @@ const MultiTable = () => {
         const reserveId = row.original.revId;
         return (
           <div className="">
-            <Button className="mr-1 h-6 px-3">수정</Button>
-            <Button
-              className="mr-1 h-6 px-3 bg-[red] hover:bg-[red] "
+            <CustomTooltip
+              btnClass="mr-1 h-8 px-2 pb-1"
+              icon={faPenToSquare}
+              text="수정"
+              type="icnBtn"
+            />
+
+            <CustomTooltip
+              icon={faTrash}
+              btnClass="mr-1 h-8 px-2 bg-[red] pb-1 hover:bg-[red]"
+              text="삭제"
+              type="icnBtn"
               onClick={async () => {
                 const key = { userId: id, reserveId };
                 const result = await deleteAxiosData(
@@ -161,17 +190,14 @@ const MultiTable = () => {
                 );
                 try {
                   if (result.code === 200) {
-                    //TODO: alert 수정 하기
-                    alert("삭제가 완료되었습니다");
+                    toast(msgType[result.message]);
                     getData();
                   }
                 } catch (e) {
                   console.error(e);
                 }
               }}
-            >
-              삭제
-            </Button>
+            />
           </div>
         );
       },
