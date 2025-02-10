@@ -70,7 +70,7 @@ const CustomCard = (props: {
             )}
           </div>
           <div
-            onClick={() => router.push(`/hotel/${item._id}`)}
+            onClick={() => router.push(`/hotel/${item._id}?type=create`)}
             className="hover:underline text-sm text-[#000] font-extrabold pt-1 md:pt-3 text-[12px] text-right"
           >
             예약하기

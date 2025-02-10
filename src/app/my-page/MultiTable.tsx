@@ -38,24 +38,33 @@ import {
 import { toast } from "sonner";
 import { msgType } from "@/lib/utils";
 import CustomTooltip from "@/components/providers/CustomTooltip";
+import { useRouter } from "next/navigation";
 
 export type tableType = {
   revId: string;
   revName: string;
   revCom: string;
   revDate: string;
+  hotelId: string;
+  revPeriod: string;
   visitMethod: "car" | "walking";
 };
 
-export type dataTye = {
+export type dataType = {
   reserveId: string;
   revName: string;
   visitMethod: string;
-  date: string;
+  revDate: string;
+  startDate: string;
+  endDate: string;
+  revPeriod: string;
+  hotelId: string;
   hotelInfo: { ldgs_nm: string };
 };
 
 const MultiTable = () => {
+  const router = useRouter();
+
   const { id } = useParams() as { id: string };
   const [sorting, setSorting] = useState<SortingState>([]);
   useState<VisibilityState>({});
@@ -140,14 +149,7 @@ const MultiTable = () => {
       accessorKey: "revPeriod",
       header: () => <div>참여/숙박 기간</div>,
       cell: ({ row }) => {
-        //const amount = parseFloat(row.getValue("amount"));
-
-        // const formatted = new Intl.NumberFormat("en-US", {
-        //   style: "currency",
-        //   currency: "USD",
-        // }).format(amount);
-
-        return <div className="font-medium">{row.getValue("")}</div>;
+        return <div className="font-medium">{row.getValue("revPeriod")}</div>;
       },
     },
     {
@@ -175,6 +177,17 @@ const MultiTable = () => {
               icon={faPenToSquare}
               text="수정"
               type="icnBtn"
+              onClick={() =>
+                router.push(
+                  `/hotel/${row.original.hotelId}?type=edit&revNm=${
+                    row.original.revName
+                  }&startDate=${
+                    row.original.revPeriod.split(" ~ ")[0]
+                  }&endDate=${
+                    row.original.revPeriod.split(" ~ ")[1]
+                  }&visitMethod=${row.original.visitMethod}`
+                )
+              }
             />
 
             <CustomTooltip
@@ -207,13 +220,15 @@ const MultiTable = () => {
   const getData = async () => {
     const data = await getAxiosData(`/api/myPage/${id}`);
 
-    const newArr = data.data.hotelList.map((i: dataTye) => {
+    const newArr = data.data.hotelList.map((i: dataType) => {
       return {
         revId: i.reserveId,
         revName: i.revName,
         revCom: i.hotelInfo.ldgs_nm,
         visitMethod: i.visitMethod,
-        revDate: i.date,
+        revPeriod: `${i.startDate} ~ ${i.endDate}`,
+        revDate: i.revDate,
+        hotelId: i.hotelId,
       };
     });
 

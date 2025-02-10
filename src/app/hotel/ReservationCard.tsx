@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -38,9 +39,18 @@ import { toast } from "sonner";
 
 const ReservationCard = () => {
   const { id } = useParams() as { id: string };
+  const searchParams = useSearchParams();
+  const revType = searchParams?.get("type");
+  const revNm = searchParams?.get("revNm");
+  const revVisitMethod = searchParams?.get("visitMethod");
+  const revStart = searchParams?.get("startDate");
+  const revEnd = searchParams?.get("endDate");
 
   const { data: session } = useSession();
-  const [checked, setChecked] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(
+    revType !== "edit" ? false : revNm === session?.user?.name
+  );
+
   const formSchema = z.object({
     username: z.string().optional(),
     revName: z
@@ -60,12 +70,16 @@ const ReservationCard = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: session?.user?.name ?? "",
-      revName: "",
+      revName: revType !== "edit" ? "" : revNm ?? "",
       date: {
-        from: new Date(),
-        to: addDays(new Date(), 2),
+        from:
+          revType !== "edit" ? new Date() : new Date(revStart ?? new Date()),
+
+        to:
+          revType !== "edit"
+            ? addDays(new Date(), 2)
+            : new Date(revEnd ?? new Date()),
       },
-      visitMethod: "NCAR",
     },
   });
 
@@ -73,7 +87,9 @@ const ReservationCard = () => {
     const obj = {
       username: session?.user?.name,
       revName: checked ? session?.user?.name : values.revName,
-      date: format(values.date.from, "yyyy-MM-dd"),
+      startDate: format(values.date.from, "yyyy-MM-dd"),
+      endDate: format(values.date.to, "yyyy-MM-dd"),
+      revDate: format(new Date(), "yyyy-MM-dd"),
       visitMethod: values.visitMethod,
       userId: session?.userId,
       hotelId: id,
@@ -220,7 +236,9 @@ const ReservationCard = () => {
                       <FormLabel>방문 수단 선택</FormLabel>
                       <div className="items-top flex space-x-2 flex-row">
                         <RadioGroup
-                          defaultValue="NCAR"
+                          defaultValue={
+                            revType !== "edit" ? "NCAR" : revVisitMethod ?? ""
+                          }
                           className="flex"
                           onChange={(e) => field.onChange(e)}
                         >
