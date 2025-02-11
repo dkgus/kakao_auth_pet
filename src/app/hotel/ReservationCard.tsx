@@ -34,7 +34,7 @@ import { z } from "zod";
 
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { postAxiosData } from "@/lib/axiosData";
+import { postAxiosData, updateAxiosData } from "@/lib/axiosData";
 import { toast } from "sonner";
 
 const ReservationCard = () => {
@@ -71,6 +71,7 @@ const ReservationCard = () => {
     defaultValues: {
       username: session?.user?.name ?? "",
       revName: revType !== "edit" ? "" : revNm ?? "",
+      visitMethod: revType !== "edit" ? "NCAR" : revVisitMethod ?? "",
       date: {
         from:
           revType !== "edit" ? new Date() : new Date(revStart ?? new Date()),
@@ -94,12 +95,29 @@ const ReservationCard = () => {
       userId: session?.userId,
       hotelId: id,
     };
-    const { status, message } = await postAxiosData("/api/hotel", obj);
-    try {
-      if (status) toast(msgType[message]);
-    } catch (err) {
-      console.log(err);
-      if (status !== 200) toast(msgType[message]);
+
+    // console.log(obj);
+    // const { status, message } = await updateAxiosData(`/api/hotel/${id}`, obj);
+
+    if (revType !== "edit") {
+      const { status, message } = await postAxiosData("/api/hotel", obj);
+      try {
+        if (status) toast(msgType[message]);
+      } catch (err) {
+        console.log(err);
+        if (status !== 200) toast(msgType[message]);
+      }
+    } else {
+      const { status, message } = await updateAxiosData(
+        `/api/hotel/${id}`,
+        obj
+      );
+      try {
+        if (status) toast(message);
+      } catch (err) {
+        console.log(err);
+        if (status !== 200) toast(message);
+      }
     }
   };
 
@@ -231,29 +249,30 @@ const ReservationCard = () => {
                 <FormField
                   control={form.control}
                   name="visitMethod"
-                  render={({ field }) => (
-                    <FormItem className="pb-10">
-                      <FormLabel>방문 수단 선택</FormLabel>
-                      <div className="items-top flex space-x-2 flex-row">
-                        <RadioGroup
-                          defaultValue={
-                            revType !== "edit" ? "NCAR" : revVisitMethod ?? ""
-                          }
-                          className="flex"
-                          onChange={(e) => field.onChange(e)}
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="NCAR" id="NCAR" />
-                            <Label htmlFor="NCAR">대중교통</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="CAR" id="CAR" />
-                            <Label htmlFor="CAR">차</Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    return (
+                      <FormItem className="pb-10">
+                        <FormLabel>방문 수단 선택</FormLabel>
+                        <div className="items-top flex space-x-2 flex-row">
+                          <RadioGroup
+                            {...field}
+                            value={field.value}
+                            className="flex"
+                            onValueChange={field.onChange}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="NCAR" id="NCAR" />
+                              <Label htmlFor="NCAR">도보</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="CAR" id="CAR" />
+                              <Label htmlFor="CAR">차</Label>
+                            </div>
+                          </RadioGroup>
+                        </div>
+                      </FormItem>
+                    );
+                  }}
                 />
               </ScrollArea>
               <Button type="submit" className="w-[100%]">

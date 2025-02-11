@@ -18,6 +18,13 @@ export const postAxiosData = async (url: string, data: object) => {
   return res.data;
 };
 
+export const updateAxiosData = async (url: string, data: object) => {
+  const res = await axios.put(url, data, {
+    headers: headerOption,
+  });
+  return res.data;
+};
+
 export const deleteAxiosData = async (
   url: string,
   key: { userId: string; reserveId: string }

@@ -220,7 +220,7 @@ const MultiTable = () => {
   const getData = async () => {
     const data = await getAxiosData(`/api/myPage/${id}`);
 
-    const newArr = data.data.hotelList.map((i: dataType) => {
+    const newArr = data?.data?.hotelList?.map((i: dataType) => {
       return {
         revId: i.reserveId,
         revName: i.revName,
