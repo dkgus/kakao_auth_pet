@@ -98,10 +98,15 @@ export const moveLocation = (
 
 export const msgType: { [key: string]: string } = {
   CREATE_HOTEL: "호텔 예약이 완료되었습니다.",
-  CREATE_HOTEL_FAIL: "호텔 예약에 실패했습니다. 다시 시도해주세요. ",
+  CREATE_HOTEL_FAIL:
+    "호텔 예약에 실패했습니다. 새로고침 후 다시 시도해주세요. ",
   CREATE_HOTEL_FAIL_DEP: "동일한 호텔은 예약할 수 없습니다.",
+  UPDATE_HOTEL_SUCCESS: "예약이 정상적으로 수정되었습니다.",
+  UPDATE_HOTEL_FAIL:
+    "예약 수정에 실패했습니다. 새로고침 후  다시 시도해주세요.",
   DELETE_HOTEL: "호텔 예약이 정상적으로 취소되었습니다.",
-  DELETE_HOTEL_FAIL: "호텔 예약 취소에 실패했습니다. 다시 시도해주세요.",
+  DELETE_HOTEL_FAIL:
+    "호텔 예약 취소에 실패했습니다. 새로고침 후 다시 시도해주세요.",
   NO_USER: "유저 정보가 존재하지 않습니다.",
   NO_PARAMS: "요청 파라미터를 확인해주세요.",
   GET_HOTEL_LIST: "호텔 리스트 조회 중 오류가 발생했습니다.",

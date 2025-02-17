@@ -16,11 +16,8 @@ export async function GET(
     });
     return NextResponse.json({ hotel });
   } catch (err) {
-    console.error("오류가 발생했습니다.", err);
-    return NextResponse.json(
-      { error: "오류가 발생했습니다." },
-      { status: 500 }
-    );
+    console.error("err", err);
+    return NextResponse.json({ error: "ERROR" }, { status: 500 });
   }
 }
 export async function PUT(req: Request) {
@@ -28,44 +25,77 @@ export async function PUT(req: Request) {
     const body = await req.json();
     const db = await getDb();
 
+    // 유저 확인
     const existingUser = await db
       .collection("User")
       .findOne({ id: body.userId });
 
     if (!existingUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "UPDATE_HOTEL_FAIL" }, { status: 404 });
     }
 
+    // 호텔 ID 확인 및 변환
     if (!ObjectId.isValid(body.hotelId)) {
-      return NextResponse.json(
-        { error: "Invalid hotel ID format" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "UPDATE_HOTEL_FAIL" }, { status: 400 });
     }
+    const hotelId = await new ObjectId(body.hotelId);
 
-    const hotelId = new ObjectId(body.hotelId);
-    const reserveId = new ObjectId();
+    // 기존 예약 ID 확인
+    if (!body.reserveId || !ObjectId.isValid(body.reserveId)) {
+      return NextResponse.json({ error: "UPDATE_HOTEL_FAIL" }, { status: 400 });
+    }
+    const reserveId = await new ObjectId(body.reserveId);
 
+    // 호텔 정보 조회
     const hotelInfo = await db
       .collection("HotelList")
       .findOne({ _id: hotelId });
 
     if (!hotelInfo) {
-      return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
+      return NextResponse.json({ error: "UPDATE_HOTEL_FAIL" }, { status: 404 });
     }
 
+    // 새로운 예약 정보 생성
     const newReservation = {
       ...body,
       reserveId,
       hotelInfo,
     };
 
-    const updatedUser = await db
-      .collection("User")
-      .updateOne({ id: body.userId }, { $push: { hotelList: newReservation } });
+    // 기존 예약이 있는지 확인
+    const existingReservation = await db.collection("User").findOne({
+      id: body.userId,
+      "hotelList.reserveId": reserveId,
+    });
 
-    if (updatedUser.modifiedCount === 0) {
-      return NextResponse.json({ error: "Update failed" }, { status: 500 });
+    if (existingReservation) {
+      const updateResult = await db
+        .collection("User")
+        .updateOne(
+          { id: body.userId, "hotelList.reserveId": reserveId },
+          { $set: { "hotelList.$": newReservation } }
+        );
+
+      if (updateResult.modifiedCount === 0) {
+        return NextResponse.json(
+          { error: "UPDATE_HOTEL_FAIL" },
+          { status: 500 }
+        );
+      }
+    } else {
+      const insertResult = await db
+        .collection("User")
+        .updateOne(
+          { id: body.userId },
+          { $push: { hotelList: newReservation } }
+        );
+
+      if (insertResult.modifiedCount === 0) {
+        return NextResponse.json(
+          { error: "UPDATE_HOTEL_FAIL" },
+          { status: 500 }
+        );
+      }
     }
 
     return NextResponse.json({ status: 200, message: "UPDATE_HOTEL_SUCCESS" });

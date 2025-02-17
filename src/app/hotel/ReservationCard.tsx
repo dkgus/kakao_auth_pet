@@ -2,7 +2,7 @@
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -38,6 +38,8 @@ import { postAxiosData, updateAxiosData } from "@/lib/axiosData";
 import { toast } from "sonner";
 
 const ReservationCard = () => {
+  const router = useRouter();
+
   const { id } = useParams() as { id: string };
   const searchParams = useSearchParams();
   const revType = searchParams?.get("type");
@@ -45,6 +47,7 @@ const ReservationCard = () => {
   const revVisitMethod = searchParams?.get("visitMethod");
   const revStart = searchParams?.get("startDate");
   const revEnd = searchParams?.get("endDate");
+  const revId = searchParams?.get("revId");
 
   const { data: session } = useSession();
   const [checked, setChecked] = useState<boolean>(
@@ -84,6 +87,15 @@ const ReservationCard = () => {
     },
   });
 
+  const handleResponse = (status: number, message: string) => {
+    try {
+      if (status === 200) toast(msgType[message]);
+      router.push(`/my-page/${session?.userId ?? ""}`);
+    } catch (err) {
+      console.log(err);
+      if (status !== 200) toast(msgType[message]);
+    }
+  };
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const obj = {
       username: session?.user?.name,
@@ -96,28 +108,16 @@ const ReservationCard = () => {
       hotelId: id,
     };
 
-    // console.log(obj);
-    // const { status, message } = await updateAxiosData(`/api/hotel/${id}`, obj);
-
     if (revType !== "edit") {
       const { status, message } = await postAxiosData("/api/hotel", obj);
-      try {
-        if (status) toast(msgType[message]);
-      } catch (err) {
-        console.log(err);
-        if (status !== 200) toast(msgType[message]);
-      }
+      handleResponse(status, message);
     } else {
+      const revIdObj = { ...obj, reserveId: revId };
       const { status, message } = await updateAxiosData(
         `/api/hotel/${id}`,
-        obj
+        revIdObj
       );
-      try {
-        if (status) toast(message);
-      } catch (err) {
-        console.log(err);
-        if (status !== 200) toast(message);
-      }
+      handleResponse(status, message);
     }
   };
 

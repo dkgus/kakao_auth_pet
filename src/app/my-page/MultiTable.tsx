@@ -185,7 +185,9 @@ const MultiTable = () => {
                     row.original.revPeriod.split(" ~ ")[0]
                   }&endDate=${
                     row.original.revPeriod.split(" ~ ")[1]
-                  }&visitMethod=${row.original.visitMethod}`
+                  }&visitMethod=${row.original.visitMethod}&revId=${
+                    row.original.revId
+                  }`
                 )
               }
             />
@@ -256,9 +258,10 @@ const MultiTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 justify-between">
+        <div className="text-[20px]">예약 리스트</div>
         <Input
-          placeholder="Filter emails..."
+          placeholder="예약 리스트를 조회해보세요!"
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -267,7 +270,7 @@ const MultiTable = () => {
         />
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="font-[13px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -287,8 +290,8 @@ const MultiTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+            {table?.getRowModel()?.rows?.length ? (
+              table.getRowModel()?.rows?.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}

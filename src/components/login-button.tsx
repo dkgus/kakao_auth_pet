@@ -19,7 +19,7 @@ const LoginButton = () => {
           type="r_down"
           menuList={[
             { key: "logout", value: "LOGOUT" },
-            { key: "myPage", value: "내 예약 정보 조회" },
+            { key: "myPage", value: "마이 페이지" },
           ]}
         />
       )}
