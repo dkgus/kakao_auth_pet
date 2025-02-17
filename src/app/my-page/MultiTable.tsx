@@ -64,12 +64,24 @@ export type dataType = {
 
 const MultiTable = () => {
   const router = useRouter();
-
   const { id } = useParams() as { id: string };
   const [sorting, setSorting] = useState<SortingState>([]);
   useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [dataState, setData] = useState<tableType[]>([]);
+
+  const deleteFunc = async (reserveId: string) => {
+    const key = { userId: id, reserveId };
+    const result = await deleteAxiosData(`/api/myPage/${key.reserveId}`, key);
+    try {
+      if (result.code === 200) {
+        toast(msgType[result.message]);
+        getData();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const columns: ColumnDef<tableType>[] = [
     {
@@ -197,20 +209,15 @@ const MultiTable = () => {
               btnClass="mr-1 h-8 px-2 bg-[red] pb-1 hover:bg-[red]"
               text="삭제"
               type="icnBtn"
-              onClick={async () => {
-                const key = { userId: id, reserveId };
-                const result = await deleteAxiosData(
-                  `/api/myPage/${key.reserveId}`,
-                  key
-                );
-                try {
-                  if (result.code === 200) {
-                    toast(msgType[result.message]);
-                    getData();
-                  }
-                } catch (e) {
-                  console.error(e);
-                }
+              onClick={() => {
+                toast("정말 예약을 취소하시겠습니까?", {
+                  description: "취소는 복구되지않습니다.",
+                  action: {
+                    label: "삭제",
+                    onClick: () => deleteFunc(reserveId),
+                  },
+                  closeButton: true,
+                });
               }}
             />
           </div>

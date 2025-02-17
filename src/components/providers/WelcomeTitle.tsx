@@ -10,23 +10,12 @@ import {
 } from "@/components/ui/card";
 import { useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import CustomTooltip from "./CustomTooltip";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 import { Button } from "@/components/ui/button";
 import MultiIcon from "@/components/icons/MultiIcon";
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 
 const WelcomeTitle = () => {
   const { data: session } = useSession();
-
-  console.log("session", session);
   return (
     <div className="text-center">
       <Card className="bg-[#FAF7F0]">
@@ -44,7 +33,7 @@ const WelcomeTitle = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="text-left text-[13px]">
-          <p>😊 반려동물 이름 : 고양이 </p>
+          <p>😊 반려동물 이름: 고양이 </p>
           <p>😊 반려동물 타입: 고양이</p>
           <p>😊 회원 이름: {session?.user?.name}</p>
           <p>😊 회원 이메일: email@naver.com</p>
