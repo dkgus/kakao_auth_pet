@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -13,9 +13,12 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from "@/components/ui/button";
 import MultiIcon from "@/components/icons/MultiIcon";
+import { useRouter } from "next/navigation";
 
 const WelcomeTitle = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+  console.log(session);
   return (
     <div className="text-center">
       <Card className="bg-[#FAF7F0]">
@@ -23,7 +26,14 @@ const WelcomeTitle = () => {
           <div className="flex justify-between">
             <CardTitle className="text-left">회원 정보</CardTitle>
 
-            <Button className={"mr-1 h-8 px-2 pb-1"} onClick={() => null}>
+            <Button
+              className={"mr-1 h-8 px-2 pb-1"}
+              onClick={() =>
+                router.push(
+                  `/my-page/edit/${session?.userId}?name=${session?.user?.name}&petType=${session?.user?.petNm}%petNm=${session?.user?.petNm}&phone=${session?.user?.phone}`
+                )
+              }
+            >
               <MultiIcon icon={faPenToSquare} />
             </Button>
           </div>

@@ -9,6 +9,17 @@ declare module "next-auth" {
   interface Session {
     accessToken?: string;
     userId?: string;
+    user?: {
+      name?: string | null;
+      email?: string | null;
+
+      phone?: string | null;
+      period?: string | null;
+      image?: string | null;
+
+      petNm?: string | null;
+      petType?: string | null;
+    };
   }
 }
 
@@ -41,6 +52,7 @@ const authOptions: NextAuthOptions = {
         await db.collection("User").insertOne({
           id: user.id,
           name: user.name,
+          petNm: "",
           hotels: [],
           events: [],
           commu: [],
