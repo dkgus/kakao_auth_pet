@@ -30,6 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import MultiIcon from "../icons/MultiIcon";
 import { faPerson, faPaw } from "@fortawesome/free-solid-svg-icons";
+import CustomDropzone from "./CustomDropzone";
 
 const CustomUserCard = () => {
   const router = useRouter();
@@ -47,6 +48,18 @@ const CustomUserCard = () => {
   const [checked, setChecked] = useState<boolean>(
     revType !== "edit" ? false : revNm === session?.user?.name
   );
+
+  const [fileNm, setFileNm] = useState<{
+    name: string;
+    type: string;
+    preview: string | null;
+    loading: boolean;
+  }>({
+    name: "",
+    type: "",
+    preview: null,
+    loading: true,
+  });
 
   const formSchema = z.object({
     username: z.string().optional(),
@@ -225,13 +238,12 @@ const CustomUserCard = () => {
                     )}
                   />
                 </div>
-                <Separator className="w-[90%] m-auto my-[30px] " />
+                <Separator className="w-[90%] m-auto my-[30px]" />
                 <TitleNm nm="팻 정보" />
 
-                <div className="flex w-[100%]">
-                  <div className="imgBox w-[50%] pl-[6%]">
-                    <img src="https://placehold.co/400x400" />
-                  </div>
+                <div className="petBox flex w-[100%] gap-[50px]">
+                  <CustomDropzone fileNm={fileNm} setFileNm={setFileNm} />
+
                   <div className="infoBox w-[48%]">
                     {Array(3)
                       .fill({ length: 4 })
@@ -253,7 +265,13 @@ const CustomUserCard = () => {
 
                               <FormControl>
                                 <Input
-                                  placeholder="이용자의 성함을 입력해주세요"
+                                  placeholder={
+                                    idx === 0
+                                      ? "반려동물의 이름을 입력해주세요"
+                                      : idx === 1
+                                      ? "반려동물 종류를 선택해주세요"
+                                      : "특이사항을 작성해주세요"
+                                  }
                                   {...field}
                                   value={
                                     checked
