@@ -14,6 +14,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Slider } from "@/components/ui/slider";
 
@@ -31,6 +34,7 @@ import { toast } from "sonner";
 import MultiIcon from "../icons/MultiIcon";
 import { faPerson, faPaw } from "@fortawesome/free-solid-svg-icons";
 import CustomDropzone from "./CustomDropzone";
+import { Textarea } from "../ui/textarea";
 
 const CustomUserCard = () => {
   const router = useRouter();
@@ -76,6 +80,8 @@ const CustomUserCard = () => {
     visitMethod: z.string().optional(),
     period: z.number().optional(),
     petNm: z.string().trim(),
+    phone: z.string().trim(),
+    email: z.string().trim(),
     petType: z.string().trim(),
     memo: z.string().optional(),
   });
@@ -134,6 +140,11 @@ const CustomUserCard = () => {
     // }
   };
 
+  const petType = [
+    { key: "강아지", value: "dog" },
+    { key: "고양이", value: "cat" },
+  ];
+
   const TitleNm = ({ nm }: { nm: string }) => (
     <div className="flex pl-[6%] pb-6">
       <MultiIcon icon={nm === "회원정보" ? faPerson : faPaw} />
@@ -158,7 +169,7 @@ const CustomUserCard = () => {
                     name="username"
                     render={({ field }) => (
                       <FormItem className="pb-10 w-[40%]">
-                        <FormLabel>이름</FormLabel>
+                        <FormLabel>* 이름</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="예약자 성함을 입력해주세요"
@@ -173,21 +184,21 @@ const CustomUserCard = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="revName"
+                    name="phone"
                     render={({ field }) => (
                       <FormItem className="pb-10 w-[40%]">
-                        <FormLabel>연락처</FormLabel>
+                        <FormLabel>* 연락처</FormLabel>
 
                         <FormControl>
                           <Input
-                            placeholder="이용자의 성함을 입력해주세요"
+                            placeholder="이용자의 연락처를 입력해주세요"
                             {...field}
-                            value={
-                              checked ? session?.user?.name ?? "" : field.value
+                            value={field.value || ""}
+                            className={
+                              form.formState.errors.phone
+                                ? "border-red-500"
+                                : ""
                             }
-                            onChange={(e) => {
-                              if (!checked) field.onChange(e);
-                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -198,10 +209,10 @@ const CustomUserCard = () => {
                 <div className="flex justify-evenly">
                   <FormField
                     control={form.control}
-                    name="username"
+                    name="email"
                     render={({ field }) => (
                       <FormItem className="pb-10 w-[40%]">
-                        <FormLabel>이메일</FormLabel>
+                        <FormLabel>* 이메일</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="예약자 성함을 입력해주세요"
@@ -219,7 +230,7 @@ const CustomUserCard = () => {
                     name="period"
                     render={({ field }) => (
                       <FormItem className="pb-10 w-[40%]">
-                        <FormLabel>반려동물 양육기간</FormLabel>
+                        <FormLabel>* 반려동물 양육기간</FormLabel>
                         <FormControl>
                           <Slider
                             max={15}
@@ -245,49 +256,71 @@ const CustomUserCard = () => {
                   <CustomDropzone fileNm={fileNm} setFileNm={setFileNm} />
 
                   <div className="infoBox w-[48%]">
-                    {Array(3)
-                      .fill({ length: 4 })
-                      .map((_, idx) => (
-                        <FormField
-                          control={form.control}
-                          name={
-                            idx === 0 ? "petNm" : idx === 1 ? "petType" : "memo"
-                          }
-                          render={({ field }) => (
-                            <FormItem className="pb-10 w-[100%]">
-                              <FormLabel>
-                                {idx === 0
-                                  ? "이름"
-                                  : idx === 1
-                                  ? "반려동물 종류"
-                                  : "특이사항"}
-                              </FormLabel>
+                    <FormField
+                      control={form.control}
+                      name={"petNm"}
+                      render={({ field }) => (
+                        <FormItem className="pb-10 w-[100%]">
+                          <FormLabel>* 이름</FormLabel>
 
-                              <FormControl>
-                                <Input
-                                  placeholder={
-                                    idx === 0
-                                      ? "반려동물의 이름을 입력해주세요"
-                                      : idx === 1
-                                      ? "반려동물 종류를 선택해주세요"
-                                      : "특이사항을 작성해주세요"
-                                  }
-                                  {...field}
-                                  value={
-                                    checked
-                                      ? session?.user?.name ?? ""
-                                      : field.value
-                                  }
-                                  onChange={(e) => {
-                                    if (!checked) field.onChange(e);
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      ))}
+                          <FormControl>
+                            <Input
+                              placeholder={"반려동물의 이름을 입력해주세요"}
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={"petType"}
+                      render={({ field }) => (
+                        <FormItem className="pb-10 w-[100%]">
+                          <FormLabel>* 반려동물 종류</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col space-y-1"
+                            >
+                              {petType.map((i) => (
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value={i.value} />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {i.key}
+                                  </FormLabel>
+                                </FormItem>
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={"memo"}
+                      render={({ field }) => (
+                        <FormItem className="pb-10 w-[100%]">
+                          <FormLabel>특이사항</FormLabel>
+
+                          <FormControl>
+                            <Textarea
+                              placeholder={"반려동물의 특이사항을 작성해주세요"}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
               </ScrollArea>

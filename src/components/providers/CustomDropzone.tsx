@@ -20,7 +20,7 @@ const CustomDropzone = (props: FileType) => {
         <div className="imgBox w-[100%] pb-[5%]">
           <label
             aria-label="uploadFile1"
-            className="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-[30vh] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif] "
+            className="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-[36vh] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif] "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
