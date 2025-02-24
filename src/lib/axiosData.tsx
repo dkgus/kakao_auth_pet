@@ -4,6 +4,10 @@ const headerOption = {
   "Content-Type": "application/json",
 };
 
+const headerFormOption = {
+  "Content-Type": "multipart/form-data",
+};
+
 export const getAxiosData = async (url: string) => {
   const res = await axios.get(url, {
     headers: headerOption,
@@ -21,6 +25,13 @@ export const postAxiosData = async (url: string, data: object) => {
 export const updateAxiosData = async (url: string, data: object) => {
   const res = await axios.put(url, data, {
     headers: headerOption,
+  });
+  return res.data;
+};
+
+export const updateFileAxiosData = async (url: string, data: object) => {
+  const res = await axios.post(url, data, {
+    headers: headerFormOption,
   });
   return res.data;
 };

@@ -1,8 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -15,69 +14,53 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Slider } from "@/components/ui/slider";
 
-import { addDays, format } from "date-fns";
-
 import { Input } from "@/components/ui/input";
 
-import { cn, msgType } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { msgType } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Separator } from "@/components/ui/separator";
 
+import { updateFileAxiosData } from "@/lib/axiosData";
+import { faPaw, faPerson } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner";
 import MultiIcon from "../icons/MultiIcon";
-import { faPerson, faPaw } from "@fortawesome/free-solid-svg-icons";
-import CustomDropzone from "./CustomDropzone";
 import { Textarea } from "../ui/textarea";
+import CustomDropzone from "./CustomDropzone";
 
 const CustomUserCard = () => {
   const router = useRouter();
 
   const { id } = useParams() as { id: string };
-  const searchParams = useSearchParams();
-  const revType = searchParams?.get("type");
-  const revNm = searchParams?.get("revNm");
-  const revVisitMethod = searchParams?.get("visitMethod");
-  const revStart = searchParams?.get("startDate");
-  const revEnd = searchParams?.get("endDate");
-  const revId = searchParams?.get("revId");
 
   const { data: session } = useSession();
-  const [checked, setChecked] = useState<boolean>(
-    revType !== "edit" ? false : revNm === session?.user?.name
-  );
-
+  const [loadingBtn, setLoadingBtn] = useState(false);
   const [fileNm, setFileNm] = useState<{
     name: string;
     type: string;
     preview: string | null;
     loading: boolean;
+    file: File | null;
   }>({
     name: "",
     type: "",
     preview: null,
     loading: true,
+    file: null,
   });
 
   const formSchema = z.object({
-    username: z.string().optional(),
-    revName: z
-      .string()
-      .trim()
-      .refine((value) => checked || value.length >= 2, {
-        message: "2 글자 이상 입력해주세요",
-      }),
-    date: z.object({
-      from: z.date(),
-      to: z.date(),
-    }),
-    visitMethod: z.string().optional(),
+    username: z.any(),
+    //revName: z.string().trim(),
+    // .refine((value) => checked || value.length >= 2, {
+    //   message: "2 글자 이상 입력해주세요",
+    // }),
+
     period: z.number().optional(),
     petNm: z.string().trim(),
     phone: z.string().trim(),
@@ -89,55 +72,44 @@ const CustomUserCard = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: session?.user?.name ?? "",
+      username: "",
       period: 3,
-      revName: revType !== "edit" ? "" : revNm ?? "",
-      visitMethod: revType !== "edit" ? "NCAR" : revVisitMethod ?? "",
-      date: {
-        from:
-          revType !== "edit" ? new Date() : new Date(revStart ?? new Date()),
-
-        to:
-          revType !== "edit"
-            ? addDays(new Date(), 2)
-            : new Date(revEnd ?? new Date()),
-      },
     },
   });
 
-  const handleResponse = (status: number, message: string) => {
-    try {
-      if (status === 200) toast(msgType[message]);
-      router.push(`/my-page/${session?.userId ?? ""}`);
-    } catch (err) {
-      console.log(err);
-      if (status !== 200) toast(msgType[message]);
-    }
-  };
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("values", values);
-    const obj = {
-      username: session?.user?.name,
-      revName: checked ? session?.user?.name : values.revName,
-      startDate: format(values.date.from, "yyyy-MM-dd"),
-      endDate: format(values.date.to, "yyyy-MM-dd"),
-      revDate: format(new Date(), "yyyy-MM-dd"),
-      visitMethod: values.visitMethod,
-      userId: session?.userId,
-      hotelId: id,
-    };
+    setLoadingBtn(true);
+    try {
+      const formData = new FormData();
 
-    // if (revType !== "edit") {
-    //   const { status, message } = await postAxiosData("/api/hotel", obj);
-    //   handleResponse(status, message);
-    // } else {
-    //   const revIdObj = { ...obj, reserveId: revId };
-    //   const { status, message } = await updateAxiosData(
-    //     `/api/hotel/${id}`,
-    //     revIdObj
-    //   );
-    //   handleResponse(status, message);
-    // }
+      const obj = {
+        userId: id,
+        name: session?.user?.name ?? "",
+        phone: values.phone,
+        period: String(values?.period),
+        petNm: values.petNm,
+        petType: values.petType,
+      };
+
+      Object.entries(obj).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      if (fileNm.file) {
+        formData.append("img", fileNm.file);
+      }
+
+      const { message, status } = await updateFileAxiosData(
+        "/api/user",
+        formData
+      );
+
+      if (status === 200) router.push(`/my-page/${session?.userId ?? ""}`);
+      toast(msgType[message]);
+      setLoadingBtn(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const petType = [
@@ -152,6 +124,10 @@ const CustomUserCard = () => {
     </div>
   );
 
+  const onError = (errors: any) => {
+    console.log("폼 에러:", errors);
+  };
+
   return (
     <div className="m-auto w-[100%] pt-3 md:pt-0">
       <Card className="h-[45vh] md:h-[89vh]">
@@ -160,7 +136,10 @@ const CustomUserCard = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              onSubmit={form.handleSubmit(onSubmit, onError)}
+              className="space-y-8"
+            >
               <ScrollArea className="h-[19vh] md:h-[60vh]">
                 <TitleNm nm="회원정보" />
                 <div className="flex justify-evenly">
@@ -172,6 +151,8 @@ const CustomUserCard = () => {
                         <FormLabel>* 이름</FormLabel>
                         <FormControl>
                           <Input
+                            disabled={true}
+                            readOnly={true}
                             placeholder="예약자 성함을 입력해주세요"
                             {...field}
                             value={session?.user?.name ?? ""}
@@ -217,7 +198,10 @@ const CustomUserCard = () => {
                           <Input
                             placeholder="예약자 성함을 입력해주세요"
                             {...field}
-                            value={session?.user?.name ?? ""}
+                            value={field.value}
+                            onChange={(value) => {
+                              field.onChange(value);
+                            }}
                           />
                         </FormControl>
 
@@ -324,7 +308,7 @@ const CustomUserCard = () => {
                   </div>
                 </div>
               </ScrollArea>
-              <Button type="submit" className="w-[100%] ">
+              <Button type="submit" className="w-[100%]" disabled={loadingBtn}>
                 수정하기
               </Button>
             </form>

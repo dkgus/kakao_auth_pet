@@ -8,6 +8,7 @@ interface FileType {
     type: string;
     preview: string | null;
     loading: boolean;
+    file: File | null;
   };
   setFileNm: (fileNm: FileType["fileNm"]) => void;
 }
@@ -52,6 +53,7 @@ const CustomDropzone = (props: FileType) => {
                     name: data?.name ?? "",
                     type: data?.type ?? "",
                     preview: URL.createObjectURL(data),
+                    file: data,
                     loading: false,
                   });
                 }
@@ -105,6 +107,7 @@ const CustomDropzone = (props: FileType) => {
                       type: "",
                       preview: null,
                       loading: true,
+                      file: null,
                     });
                   }}
                 >
