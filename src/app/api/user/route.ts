@@ -9,6 +9,7 @@ interface FormType {
   period: string;
   petNm: string;
   petType: string;
+  email?: string;
   img?: File | null;
   imgUrl?: string;
 }
@@ -33,6 +34,8 @@ export async function POST(req: Request) {
   const period = formData.get("period") as string;
   const petNm = formData.get("petNm") as string;
   const petType = formData.get("petType") as string;
+  const email = formData.get("email") as string;
+
   const img = formData.get("img") as File | null;
 
   if (!userId) {
@@ -71,6 +74,7 @@ export async function POST(req: Request) {
     const updateFields: FormType = {
       name,
       phone,
+      email,
       period,
       petNm,
       petType,

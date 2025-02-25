@@ -19,13 +19,14 @@ declare module "next-auth" {
 
       petNm?: string | null;
       petType?: string | null;
+      memo?: string | null;
     };
   }
 }
 
 const clientPromise = MongoClient.connect(process.env.MONGODB_URI || "");
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     KakaoProvider({
       clientId: process.env.KAKAO_CLIENT_ID ?? "",
@@ -47,15 +48,11 @@ const authOptions: NextAuthOptions = {
       const db = client.db("User");
       //const databases = await client.db().admin().listDatabases();
       const existingUser = await db.collection("User").findOne({ id: user.id });
-
       if (!existingUser) {
         await db.collection("User").insertOne({
           id: user.id,
           name: user.name,
           petNm: "",
-          hotels: [],
-          events: [],
-          commu: [],
         });
       }
       return true;
@@ -70,7 +67,20 @@ const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
+      const client = await clientPromise;
+      const db = client.db("User");
+      const user = await db.collection("User").findOne({ id: token.sub });
       session.userId = token.sub;
+      session.user = {
+        ...session.user,
+        petNm: user?.petNm,
+        period: user?.period,
+        petType: user?.petType,
+        phone: user?.phone,
+        memo: user?.memo,
+        image: user?.imgUrl,
+        email: user?.email,
+      };
       return session;
     },
   },

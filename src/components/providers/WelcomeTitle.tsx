@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 const WelcomeTitle = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  console.log(session);
   return (
     <div className="text-center">
       <Card className="bg-[#FAF7F0]">
@@ -30,7 +29,7 @@ const WelcomeTitle = () => {
               className={"mr-1 h-8 px-2 pb-1"}
               onClick={() =>
                 router.push(
-                  `/my-page/edit/${session?.userId}?name=${session?.user?.name}&petType=${session?.user?.petNm}%petNm=${session?.user?.petNm}&phone=${session?.user?.phone}`
+                  `/my-page/edit/${session?.userId}?type=edit&name=${session?.user?.name}&phone=${session?.user?.phone}&email=${session?.user?.email}&period=${session?.user?.period}&petNm=${session?.user?.petNm}&petType=${session?.user?.petType}&memo=${session?.user?.memo}`
                 )
               }
             >

@@ -35,11 +35,16 @@ import CustomDropzone from "./CustomDropzone";
 
 const CustomUserCard = () => {
   const router = useRouter();
-
   const { id } = useParams() as { id: string };
+  const searchParams = useSearchParams();
+  const pageType = searchParams?.get("type");
+  const period = searchParams?.get("period");
+  const phone = searchParams?.get("phone");
+  const email = searchParams?.get("email");
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [loadingBtn, setLoadingBtn] = useState(false);
+
   const [fileNm, setFileNm] = useState<{
     name: string;
     type: string;
@@ -73,7 +78,9 @@ const CustomUserCard = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      period: 3,
+      phone: pageType === "edit" ? phone ?? "" : "",
+      email: pageType === "edit" ? email ?? "" : "",
+      period: pageType === "edit" ? Number(period) : 3,
     },
   });
 
@@ -89,6 +96,7 @@ const CustomUserCard = () => {
         period: String(values?.period),
         petNm: values.petNm,
         petType: values.petType,
+        email: values.email,
       };
 
       Object.entries(obj).forEach(([key, value]) => {
@@ -104,7 +112,10 @@ const CustomUserCard = () => {
         formData
       );
 
-      if (status === 200) router.push(`/my-page/${session?.userId ?? ""}`);
+      if (status === 200) {
+        router.push(`/my-page/${session?.userId ?? ""}`);
+        update({ name: "John Doe" });
+      }
       toast(msgType[message]);
       setLoadingBtn(false);
     } catch (err) {
@@ -124,9 +135,7 @@ const CustomUserCard = () => {
     </div>
   );
 
-  const onError = (errors: any) => {
-    console.log("폼 에러:", errors);
-  };
+  const onError = (errors: any) => console.log("폼 에러:", errors);
 
   return (
     <div className="m-auto w-[100%] pt-3 md:pt-0">
