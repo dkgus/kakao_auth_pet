@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+``;
 import {
   Form,
   FormControl,
@@ -36,6 +37,9 @@ import CustomDropzone from "./CustomDropzone";
 const CustomUserCard = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
+
+  type FormValues = z.infer<typeof formSchema>;
+
   const searchParams = useSearchParams();
   const pageType = searchParams?.get("type");
   const period = searchParams?.get("period");
@@ -280,13 +284,13 @@ const CustomUserCard = () => {
                               defaultValue={field.value}
                               className="flex flex-col space-y-1"
                             >
-                              {petType.map((i) => (
+                              {petType.map((i, idx) => (
                                 <FormItem className="flex items-center space-x-3 space-y-0">
                                   <FormControl>
                                     <RadioGroupItem value={i.value} />
                                   </FormControl>
                                   <FormLabel className="font-normal">
-                                    {i.key}
+                                    <div key={idx}>{i.key}</div>
                                   </FormLabel>
                                 </FormItem>
                               ))}
