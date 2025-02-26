@@ -1,9 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import KakaoProvider from "next-auth/providers/kakao";
 import NaverProvider from "next-auth/providers/naver";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoClient } from "mongodb";
-import { NextAuthOptions } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
@@ -12,11 +11,9 @@ declare module "next-auth" {
     user?: {
       name?: string | null;
       email?: string | null;
-
       phone?: string | null;
       period?: string | null;
       image?: string | null;
-
       petNm?: string | null;
       petType?: string | null;
       memo?: string | null;
@@ -89,3 +86,4 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+export default handler;
