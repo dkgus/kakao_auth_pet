@@ -38,8 +38,6 @@ const CustomUserCard = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
 
-  type FormValues = z.infer<typeof formSchema>;
-
   const searchParams = useSearchParams();
   const pageType = searchParams?.get("type");
   const period = searchParams?.get("period");
@@ -285,14 +283,16 @@ const CustomUserCard = () => {
                               className="flex flex-col space-y-1"
                             >
                               {petType.map((i, idx) => (
-                                <FormItem className="flex items-center space-x-3 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value={i.value} />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">
-                                    <div key={idx}>{i.key}</div>
-                                  </FormLabel>
-                                </FormItem>
+                                <div key={idx}>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value={i.value} />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      {i.key}
+                                    </FormLabel>
+                                  </FormItem>
+                                </div>
                               ))}
                             </RadioGroup>
                           </FormControl>
