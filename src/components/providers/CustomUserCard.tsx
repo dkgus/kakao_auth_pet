@@ -5,7 +5,6 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-``;
 import {
   Form,
   FormControl,
@@ -137,7 +136,7 @@ const CustomUserCard = () => {
     </div>
   );
 
-  const onError = (errors: any) => console.log("폼 에러:", errors);
+  //const onError = (errors: any) => console.log("폼 에러:", errors);
 
   return (
     <div className="m-auto w-[100%] pt-3 md:pt-0">
@@ -148,7 +147,10 @@ const CustomUserCard = () => {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit, onError)}
+              onSubmit={form.handleSubmit(
+                onSubmit
+                //, onError
+              )}
               className="space-y-8"
             >
               <ScrollArea className="h-[19vh] md:h-[60vh]">
