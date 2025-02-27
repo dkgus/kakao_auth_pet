@@ -4,11 +4,11 @@ import { faCheck, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import MultiIcon from "../icons/MultiIcon";
 interface FileType {
   fileNm: {
-    name: string;
-    type: string;
-    preview: string | null;
-    loading: boolean;
-    file: File | null;
+    name?: string;
+    type?: string;
+    preview?: string | null;
+    loading?: boolean;
+    file?: File | null;
   };
   setFileNm: (fileNm: FileType["fileNm"]) => void;
 }
@@ -46,7 +46,11 @@ const CustomDropzone = (props: FileType) => {
               onChange={(e) => {
                 const data = e?.target?.files?.[0];
                 if (!data) return;
-                if (data?.type !== "image/png" && data?.type !== "image/jpg") {
+                if (
+                  data?.type !== "image/png" &&
+                  data?.type !== "image/jpg" &&
+                  data?.type !== "image/jpeg"
+                ) {
                   alert("파일 타입오류");
                 } else {
                   setFileNm({
@@ -89,7 +93,7 @@ const CustomDropzone = (props: FileType) => {
                       ) : (
                         <div className="flex">
                           <MultiIcon icon={faCheck} color="green" />{" "}
-                          <div className="pl-1">업로드 완료</div>
+                          <div className="pl-1">이미지 로드 완료</div>
                         </div>
                       )}
                     </h5>

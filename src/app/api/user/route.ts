@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { MongoClient } from "mongodb";
 import cloudinary from "@/lib/cloudinary";
+import { getDb } from "@/lib/db";
 
 interface FormType {
   userId?: string;
@@ -10,6 +11,7 @@ interface FormType {
   petNm: string;
   petType: string;
   email?: string;
+  memo?: string;
   img?: File | null;
   imgUrl?: string;
 }
@@ -19,6 +21,8 @@ interface UploadResult {
 }
 
 export async function POST(req: Request) {
+  const db = await getDb();
+
   if (!req.body) {
     return NextResponse.json(
       { message: "Request body is empty" },
@@ -35,6 +39,7 @@ export async function POST(req: Request) {
   const petNm = formData.get("petNm") as string;
   const petType = formData.get("petType") as string;
   const email = formData.get("email") as string;
+  const memo = formData.get("memo") as string;
 
   const img = formData.get("img") as File | null;
 
@@ -42,10 +47,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "NO_USER" }, { status: 400 });
   }
 
+  const existingUser = await db.collection("User").findOne({ id: userId });
+  const existingImgUrl = existingUser?.imgUrl;
   let imageUrl: string | null = null;
 
   if (img) {
     try {
+      if (existingImgUrl) {
+        const publicId = existingImgUrl
+          .split("/")
+          .slice(-2)
+          .join("/")
+          .replace(".jpg", "")
+          .replace(".png", "");
+
+        await cloudinary.uploader.destroy(publicId);
+      }
+
       const arrayBuffer = await img.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
@@ -78,6 +96,7 @@ export async function POST(req: Request) {
       period,
       petNm,
       petType,
+      memo,
     };
 
     if (imageUrl) {

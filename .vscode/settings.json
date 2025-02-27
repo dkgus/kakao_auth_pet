@@ -1,4 +1,15 @@
 {
+  "css.lint.unknownAtRules": "ignore",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnType": true,
+  "git.autofetch": true,
+  "json.schemas": [],
+  "workbench.colorTheme": "Pink Cat Boo",
+  "vscode-pets.petColor": "white",
+  "vscode-pets.theme": "beach",
+  "vscode-pets.throwBallWithMouse": true,
+  "vscode-pets.petSize": "small",
+  "workbench.iconTheme": "material-icon-theme",
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.formatOnPaste": true
 }

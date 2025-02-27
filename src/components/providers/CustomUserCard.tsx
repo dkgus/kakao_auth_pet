@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -36,22 +36,24 @@ import CustomDropzone from "./CustomDropzone";
 const CustomUserCard = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
-
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const pageType = searchParams?.get("type");
   const period = searchParams?.get("period");
   const phone = searchParams?.get("phone");
   const email = searchParams?.get("email");
+  const petNm = searchParams?.get("petNm");
+  const petType = searchParams?.get("petType");
+  const memo = searchParams?.get("memo");
 
-  const { data: session, update } = useSession();
   const [loadingBtn, setLoadingBtn] = useState(false);
 
   const [fileNm, setFileNm] = useState<{
-    name: string;
-    type: string;
-    preview: string | null;
-    loading: boolean;
-    file: File | null;
+    name?: string;
+    type?: string;
+    preview?: string | null;
+    loading?: boolean;
+    file?: File | null;
   }>({
     name: "",
     type: "",
@@ -59,6 +61,15 @@ const CustomUserCard = () => {
     loading: true,
     file: null,
   });
+
+  useEffect(() => {
+    if (pageType === "edit") {
+      setFileNm({
+        preview: session?.user?.image,
+        loading: false,
+      });
+    }
+  }, [pageType, session]);
 
   const formSchema = z.object({
     username: z.any(),
@@ -79,9 +90,12 @@ const CustomUserCard = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      phone: pageType === "edit" ? phone ?? "" : "",
-      email: pageType === "edit" ? email ?? "" : "",
-      period: pageType === "edit" ? Number(period) : 3,
+      phone: phone ?? "",
+      email: email ?? "",
+      period: Number(period) ?? 3,
+      petNm: petNm ?? "",
+      petType: petType ?? "",
+      memo: memo ?? "",
     },
   });
 
@@ -98,6 +112,7 @@ const CustomUserCard = () => {
         petNm: values.petNm,
         petType: values.petType,
         email: values.email,
+        memo: values.memo ?? "",
       };
 
       Object.entries(obj).forEach(([key, value]) => {
@@ -115,7 +130,6 @@ const CustomUserCard = () => {
 
       if (status === 200) {
         router.push(`/my-page/${session?.userId ?? ""}`);
-        update({ name: "John Doe" });
       }
       toast(msgType[message]);
       setLoadingBtn(false);
@@ -124,7 +138,7 @@ const CustomUserCard = () => {
     }
   };
 
-  const petType = [
+  const petTypeArr = [
     { key: "강아지", value: "dog" },
     { key: "고양이", value: "cat" },
   ];
@@ -265,6 +279,9 @@ const CustomUserCard = () => {
                               placeholder={"반려동물의 이름을 입력해주세요"}
                               {...field}
                               value={field.value || ""}
+                              onChange={(value) => {
+                                field.onChange(value);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -281,10 +298,11 @@ const CustomUserCard = () => {
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              value={field.value || ""}
+                              //defaultValue={field.value}
                               className="flex flex-col space-y-1"
                             >
-                              {petType.map((i, idx) => (
+                              {petTypeArr.map((i, idx) => (
                                 <div key={idx}>
                                   <FormItem className="flex items-center space-x-3 space-y-0">
                                     <FormControl>
@@ -314,6 +332,7 @@ const CustomUserCard = () => {
                             <Textarea
                               placeholder={"반려동물의 특이사항을 작성해주세요"}
                               value={field.value || ""}
+                              onChange={(e) => field.onChange(e)}
                             />
                           </FormControl>
                           <FormMessage />
