@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -36,7 +35,7 @@ import CustomDropzone from "./CustomDropzone";
 const CustomUserCard = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const searchParams = useSearchParams();
   const pageType = searchParams?.get("type");
   const period = searchParams?.get("period");
@@ -46,8 +45,7 @@ const CustomUserCard = () => {
   const petType = searchParams?.get("petType");
   const memo = searchParams?.get("memo");
 
-  const [loadingBtn, setLoadingBtn] = useState(false);
-
+  const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [fileNm, setFileNm] = useState<{
     name?: string;
     type?: string;
@@ -73,34 +71,35 @@ const CustomUserCard = () => {
 
   const formSchema = z.object({
     username: z.any(),
-    //revName: z.string().trim(),
-    // .refine((value) => checked || value.length >= 2, {
-    //   message: "2 글자 이상 입력해주세요",
-    // }),
-
-    period: z.number().optional(),
-    petNm: z.string().trim(),
-    phone: z.string().trim(),
-    email: z.string().trim(),
-    petType: z.string().trim(),
+    period: z.number(),
+    petNm: z.string().trim().min(1, "반려동물 이름을 입력해주세요."),
+    phone: z.string().trim().min(1, "전화번호를 입력해주세요."),
+    email: z
+      .string()
+      .trim()
+      .min(1, "이메일을 입력해주세요.")
+      .email("올바른 이메일 형식이 아닙니다."),
+    petType: z.string().trim().min(1, "반려동물 종류를 입력해주세요."),
     memo: z.string().optional(),
+    file: z.instanceof(File, { message: "파일을 업로드해주세요." }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      phone: phone ?? "",
-      email: email ?? "",
-      period: Number(period) ?? 3,
-      petNm: petNm ?? "",
-      petType: petType ?? "",
-      memo: memo ?? "",
+      phone: pageType === "edit" ? phone ?? "" : "",
+      email: pageType === "edit" ? email ?? "" : "",
+      period: pageType === "edit" ? Number(period) : 3,
+      petNm: pageType === "edit" ? petNm ?? "" : "",
+      petType: pageType === "edit" ? petType ?? "" : "",
+      memo: pageType === "edit" ? memo ?? "" : "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoadingBtn(true);
+
     try {
       const formData = new FormData();
 
@@ -264,7 +263,29 @@ const CustomUserCard = () => {
                 <TitleNm nm="팻 정보" />
 
                 <div className="petBox flex w-[100%] gap-[50px]">
-                  <CustomDropzone fileNm={fileNm} setFileNm={setFileNm} />
+                  <FormField
+                    control={form.control}
+                    name="file"
+                    render={({ field }) => (
+                      <FormItem className="pb-10 w-[45%]">
+                        <FormLabel className="pl-[13%]">
+                          * 반려동물 사진 업로드
+                        </FormLabel>
+                        <FormControl>
+                          <CustomDropzone
+                            fileNm={fileNm}
+                            setFileNm={(file) => {
+                              setFileNm(file);
+                              field.onChange(file.file);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage className="pl-[13%]" />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* <CustomDropzone fileNm={fileNm} setFileNm={setFileNm} /> */}
 
                   <div className="infoBox w-[48%]">
                     <FormField

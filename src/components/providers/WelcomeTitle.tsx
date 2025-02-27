@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -16,8 +16,13 @@ import MultiIcon from "@/components/icons/MultiIcon";
 import { useRouter } from "next/navigation";
 
 const WelcomeTitle = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    update();
+  }, []);
+
   return (
     <div className="text-center">
       <Card className="bg-[#FAF7F0]">
@@ -42,11 +47,11 @@ const WelcomeTitle = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="text-left text-[13px]">
-          <p>😊 반려동물 이름: 고양이 </p>
-          <p>😊 반려동물 타입: 고양이</p>
+          <p>😊 반려동물 이름: {session?.user?.petNm} </p>
+          <p>😊 반려동물 타입: {session?.user?.petType}</p>
           <p>😊 회원 이름: {session?.user?.name}</p>
-          <p>😊 회원 이메일: email@naver.com</p>
-          <p>😊 회원 연락처: 010.1234.5678</p>
+          <p>😊 회원 이메일: {session?.user?.email}</p>
+          <p>😊 회원 연락처: {session?.user?.phone}</p>
         </CardContent>
       </Card>
     </div>
