@@ -133,7 +133,6 @@ const LocationMap = () => {
       setLoading(true);
       const url = hotelURL;
       const res = await getAxiosData(String(url));
-
       if (res.length > 0) {
         setHotelTemp(res);
         setHospitalList([]);
@@ -187,10 +186,10 @@ const LocationMap = () => {
         if (status === "OK") {
           const arr: LocationType[] = [];
           arr.push({
+            ...item,
             fclty_la: result[0].y,
             fclty_lo: result[0].x,
           });
-
           setHotelList((prev) => {
             return [...prev, arr[0]];
           });
@@ -225,11 +224,18 @@ const LocationMap = () => {
   ): MarkerType => {
     const lat: number = Number(item.fclty_la);
     const lng: number = Number(item.fclty_lo);
+    const nm: string =
+      type === "hospital" ? item?.fclty_flag_nm ?? "" : item.ldgs_nm ?? "";
+    const location: string =
+      type === "hospital" ? item.rdnmadr_nm ?? "" : item.ldgs_addr ?? "";
 
     return {
       position: { lat, lng },
       img: { src: type !== "hotel" ? "/hospital.png" : "/hotel.png" },
-      onClick: () => moveLocation(mapInstance, lat, lng),
+      onClick: () => {
+        moveLocation(mapInstance, lat, lng);
+      },
+      info: { nm, location },
     };
   };
 

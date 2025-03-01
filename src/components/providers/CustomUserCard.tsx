@@ -61,13 +61,8 @@ const CustomUserCard = () => {
   });
 
   useEffect(() => {
-    if (pageType === "edit") {
-      setFileNm({
-        preview: session?.user?.image,
-        loading: false,
-      });
-    }
-  }, [pageType, session]);
+    update();
+  }, []);
 
   const formSchema = z.object({
     username: z.any(),
