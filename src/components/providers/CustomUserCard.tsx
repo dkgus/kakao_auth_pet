@@ -45,6 +45,8 @@ const CustomUserCard = () => {
   const petType = searchParams?.get("petType");
   const memo = searchParams?.get("memo");
 
+  const prevImg = pageType === "edit" && session?.user?.image;
+
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [fileNm, setFileNm] = useState<{
     name?: string;
@@ -61,6 +63,13 @@ const CustomUserCard = () => {
   });
 
   useEffect(() => {
+    if (pageType === "edit") {
+      setFileNm({
+        preview: session?.user?.image,
+        loading: false,
+      });
+    }
+
     update();
   }, []);
 
@@ -88,7 +97,7 @@ const CustomUserCard = () => {
       period: pageType === "edit" ? Number(period) : 3,
       petNm: pageType === "edit" ? petNm ?? "" : "",
       petType: pageType === "edit" ? petType ?? "" : "",
-      memo: pageType === "edit" ? memo ?? "" : "",
+      memo: pageType === "edit" && memo === undefined ? "" : memo ?? "",
     },
   });
 
@@ -347,7 +356,7 @@ const CustomUserCard = () => {
                           <FormControl>
                             <Textarea
                               placeholder={"반려동물의 특이사항을 작성해주세요"}
-                              value={field.value || ""}
+                              value={field.value ?? ""}
                               onChange={(e) => field.onChange(e)}
                             />
                           </FormControl>

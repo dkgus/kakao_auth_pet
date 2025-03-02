@@ -34,7 +34,15 @@ const WelcomeTitle = () => {
               className={"mr-1 h-8 px-2 pb-1"}
               onClick={() =>
                 router.push(
-                  `/my-page/edit/${session?.userId}?type=edit&name=${session?.user?.name}&phone=${session?.user?.phone}&email=${session?.user?.email}&period=${session?.user?.period}&petNm=${session?.user?.petNm}&petType=${session?.user?.petType}&memo=${session?.user?.memo}`
+                  `/my-page/edit/${session?.userId}?type=edit&name=${
+                    session?.user?.name
+                  }&phone=${session?.user?.phone ?? ""}&email=${
+                    session?.user?.email ?? ""
+                  }&period=${session?.user?.period ?? 3}&petNm=${
+                    session?.user?.petNm ?? ""
+                  }&petType=${session?.user?.petType ?? "dog"}&memo=${
+                    session?.user?.memo ?? ""
+                  }`
                 )
               }
             >
@@ -48,7 +56,10 @@ const WelcomeTitle = () => {
         </CardHeader>
         <CardContent className="text-left text-[13px]">
           <p>😊 반려동물 이름: {session?.user?.petNm} </p>
-          <p>😊 반려동물 타입: {session?.user?.petType}</p>
+          <p>
+            😊 반려동물 타입:{" "}
+            {session?.user?.petType === "dog" ? "강아지" : "고양이"}
+          </p>
           <p>😊 회원 이름: {session?.user?.name}</p>
           <p>😊 회원 이메일: {session?.user?.email}</p>
           <p>😊 회원 연락처: {session?.user?.phone}</p>
