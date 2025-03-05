@@ -45,8 +45,8 @@ export default function RootLayout({
               <CustomMenu
                 type="l_down"
                 menuList={[
-                  { key: "event", value: "이벤트 페이지" },
-                  { key: "community", value: "소통 게시판" },
+                  // { key: "event", value: "이벤트 페이지" },
+                  // { key: "community", value: "소통 게시판" },
                   { key: "hotel", value: "반려동물 호텔 예약" },
                 ]}
               />

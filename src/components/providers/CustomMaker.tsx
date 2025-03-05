@@ -10,14 +10,18 @@ interface MarkerType {
 
 const CustomMaker = ({ position, img, onClick, info }: MarkerType) => {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
       <MapMarker
         position={position}
         onClick={() => {
-          if (onClick) onClick();
-          setIsOpen((prev) => !prev);
+          if (
+            onClick &&
+            (img.src === "/hospital.png" || img.src === "/hotel.png")
+          ) {
+            onClick();
+            setIsOpen((prev) => !prev);
+          }
         }}
         clickable={true}
         image={{
