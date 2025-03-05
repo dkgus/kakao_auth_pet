@@ -5,11 +5,10 @@
   "git.autofetch": true,
   "json.schemas": [],
   "workbench.colorTheme": "Pink Cat Boo",
-  "vscode-pets.petColor": "white",
-  "vscode-pets.theme": "beach",
-  "vscode-pets.throwBallWithMouse": true,
-  "vscode-pets.petSize": "small",
   "workbench.iconTheme": "material-icon-theme",
   "editor.formatOnSave": true,
-  "editor.formatOnPaste": true
+  "editor.formatOnPaste": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import {
   ColumnDef,
   SortingState,
@@ -12,13 +11,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useState } from "react";
 
 import { ArrowUpDown } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 
+import CustomTooltip from "@/components/providers/CustomTooltip";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -28,62 +29,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deleteAxiosData, getAxiosData } from "@/lib/axiosData";
-import { useParams } from "next/navigation";
+import { TableType } from "@/lib/utils";
 import {
   faCopy,
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "sonner";
-import { msgType } from "@/lib/utils";
-import CustomTooltip from "@/components/providers/CustomTooltip";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-export type tableType = {
-  revId: string;
-  revName: string;
-  revCom: string;
-  revDate: string;
-  hotelId: string;
-  revPeriod: string;
-  visitMethod: "car" | "walking";
-};
+const MultiTable = (props: {
+  dataState: TableType[];
+  deleteFunc: (reserveId: string) => void;
+}) => {
+  const { dataState, deleteFunc } = props;
 
-export type dataType = {
-  reserveId: string;
-  revName: string;
-  visitMethod: string;
-  revDate: string;
-  startDate: string;
-  endDate: string;
-  revPeriod: string;
-  hotelId: string;
-  hotelInfo: { ldgs_nm: string };
-};
-
-const MultiTable = () => {
   const router = useRouter();
-  const { id } = useParams() as { id: string };
   const [sorting, setSorting] = useState<SortingState>([]);
   useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [dataState, setData] = useState<tableType[]>([]);
 
-  const deleteFunc = async (reserveId: string) => {
-    const key = { userId: id, reserveId };
-    const result = await deleteAxiosData(`/api/myPage/${key.reserveId}`, key);
-    try {
-      if (result.code === 200) {
-        toast(msgType[result.message]);
-        getData();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const columns: ColumnDef<tableType>[] = [
+  const columns: ColumnDef<TableType>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -226,28 +192,6 @@ const MultiTable = () => {
     },
   ];
 
-  const getData = async () => {
-    const data = await getAxiosData(`/api/myPage/${id}`);
-
-    const newArr = data?.data?.hotelList?.map((i: dataType) => {
-      return {
-        revId: i.reserveId,
-        revName: i.revName,
-        revCom: i.hotelInfo.ldgs_nm,
-        visitMethod: i.visitMethod,
-        revPeriod: `${i.startDate} ~ ${i.endDate}`,
-        revDate: i.revDate,
-        hotelId: i.hotelId,
-      };
-    });
-
-    setData(newArr);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
   const table = useReactTable({
     data: dataState,
     columns,
@@ -260,6 +204,11 @@ const MultiTable = () => {
     state: {
       sorting,
       rowSelection,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 4,
+      },
     },
   });
 
@@ -327,7 +276,7 @@ const MultiTable = () => {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -343,7 +292,7 @@ const MultiTable = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
+            onClick={(e) => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             Next

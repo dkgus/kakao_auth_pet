@@ -96,6 +96,27 @@ export const moveLocation = (
   return ref?.panTo(new kakao.maps.LatLng(Number(la), Number(lo)));
 };
 
+export type TableType = {
+  revId: string;
+  revName: string;
+  revCom: string;
+  revDate: string;
+  hotelId: string;
+  revPeriod: string;
+  visitMethod: "car" | "walking" | "CAR" | "WALKING";
+};
+export type DataType = {
+  reserveId: string;
+  revName: string;
+  visitMethod: string;
+  revDate: string;
+  startDate: string;
+  endDate: string;
+  revPeriod: string;
+  hotelId: string;
+  hotelInfo: { ldgs_nm: string };
+};
+
 export const msgType: { [key: string]: string } = {
   CREATE_HOTEL: "호텔 예약이 완료되었습니다.",
   CREATE_HOTEL_FAIL:

@@ -45,8 +45,6 @@ const CustomUserCard = () => {
   const petType = searchParams?.get("petType");
   const memo = searchParams?.get("memo");
 
-  const prevImg = pageType === "edit" && session?.user?.image;
-
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [fileNm, setFileNm] = useState<{
     name?: string;

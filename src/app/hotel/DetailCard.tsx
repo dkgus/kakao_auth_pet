@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { getAxiosData } from "@/lib/axiosData";
-//import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { mainBgColor } from "@/lib/constants";
 import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const DetailCard = () => {
   const { id } = useParams() as { id: string };
@@ -64,26 +64,27 @@ const DetailCard = () => {
           )}
         </CardHeader>
         <CardContent>
-          <CardTitle className="text-[17px]">{hotelData.ldgs_nm}</CardTitle>
-          <div className="text-sm">
-            <p className="pt-2">
-              {hotelData.ldgs_nm} 호텔은 주변의 다양한 관광지와 근접하여
-              대중교통만 이용하는 경우에 편리합니다.
-            </p>
-            <p className="pt-2">
-              합리적인 가격으로 다양한 시설물을 이용해보세요!
-            </p>
-            <p className="pt-2">
-              우리 호텔이 제공하는 서비스는 아래와 같습니다.
-            </p>
-            {feat.map((i, idx) => (
-              <span key={idx}>
-                <Badge className={`${mainBgColor} mr-1 mt-3`}>{i}</Badge>
-              </span>
-            ))}
-          </div>
+          <ScrollArea className="h-[8vh] md:h-[30vh]">
+            <CardTitle className="text-[17px]">{hotelData.ldgs_nm}</CardTitle>
+            <div className="text-sm">
+              <p className="pt-2">
+                {hotelData.ldgs_nm} 호텔은 주변의 다양한 관광지와 근접하여
+                대중교통만 이용하는 경우에 편리합니다.
+              </p>
+              <p className="pt-2">
+                합리적인 가격으로 다양한 시설물을 이용해보세요!
+              </p>
+              <p className="pt-2">
+                우리 호텔이 제공하는 서비스는 아래와 같습니다.
+              </p>
+              {feat.map((i, idx) => (
+                <span key={idx}>
+                  <Badge className={`${mainBgColor} mr-1 mt-3`}>{i}</Badge>
+                </span>
+              ))}
+            </div>
+          </ScrollArea>
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
     </div>
   );
