@@ -292,7 +292,7 @@ const MultiTable = (props: {
           <Button
             variant="outline"
             size="sm"
-            onClick={(e) => table.nextPage()}
+            onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             Next
