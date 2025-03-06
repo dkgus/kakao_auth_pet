@@ -145,9 +145,9 @@ const CustomUserCard = () => {
   ];
 
   const TitleNm = ({ nm }: { nm: string }) => (
-    <div className="flex pl-[6%] pb-6">
+    <div className="flex md:pl-[6%] pb-6">
       <MultiIcon icon={nm === "회원정보" ? faPerson : faPaw} />
-      <h1 className="pl-2">{nm}</h1>
+      <h1 className="pl-2 ">{nm}</h1>
     </div>
   );
 
@@ -155,7 +155,7 @@ const CustomUserCard = () => {
 
   return (
     <div className="m-auto w-[100%] pt-3 md:pt-0">
-      <Card className="h-[45vh] md:h-[89vh]">
+      <Card className="h-[86vh] md:h-[89vh]">
         <CardHeader className="text-center text-[1.1rem]">
           <div>개인정보 수정</div>
         </CardHeader>
@@ -168,14 +168,14 @@ const CustomUserCard = () => {
               )}
               className="space-y-8"
             >
-              <ScrollArea className="h-[19vh] md:h-[60vh]">
+              <ScrollArea className="h-[63vh] md:h-[60vh]">
                 <TitleNm nm="회원정보" />
                 <div className="flex justify-evenly">
                   <FormField
                     control={form.control}
                     name="username"
                     render={({ field }) => (
-                      <FormItem className="pb-10 w-[40%]">
+                      <FormItem className="pb-10 w-[45%] md:w-[40%]">
                         <FormLabel>* 이름</FormLabel>
                         <FormControl>
                           <Input
@@ -195,7 +195,7 @@ const CustomUserCard = () => {
                     control={form.control}
                     name="phone"
                     render={({ field }) => (
-                      <FormItem className="pb-10 w-[40%]">
+                      <FormItem className="pb-10 w-[45%] md:w-[40%]">
                         <FormLabel>* 연락처</FormLabel>
 
                         <FormControl>
@@ -220,7 +220,7 @@ const CustomUserCard = () => {
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem className="pb-10 w-[40%]">
+                      <FormItem className="pb-10 w-[45%] md:w-[40%]">
                         <FormLabel>* 이메일</FormLabel>
                         <FormControl>
                           <Input
@@ -241,7 +241,7 @@ const CustomUserCard = () => {
                     control={form.control}
                     name="period"
                     render={({ field }) => (
-                      <FormItem className="pb-10 w-[40%]">
+                      <FormItem className="pb-10 w-[45%] md:w-[40%]">
                         <FormLabel>* 반려동물 양육기간</FormLabel>
                         <FormControl>
                           <Slider
@@ -264,12 +264,12 @@ const CustomUserCard = () => {
                 <Separator className="w-[90%] m-auto my-[30px]" />
                 <TitleNm nm="팻 정보" />
 
-                <div className="petBox flex w-[100%] gap-[50px]">
+                <div className="petBox flex w-[100%] gap-[50px] flex-col-reverse md:flex-row">
                   <FormField
                     control={form.control}
                     name="file"
                     render={({ field }) => (
-                      <FormItem className="pb-10 w-[45%]">
+                      <FormItem className="pb-10 w-[100%] md:w-[45%] ">
                         <FormLabel className="pl-[13%]">
                           * 반려동물 사진 업로드
                         </FormLabel>
@@ -287,9 +287,7 @@ const CustomUserCard = () => {
                     )}
                   />
 
-                  {/* <CustomDropzone fileNm={fileNm} setFileNm={setFileNm} /> */}
-
-                  <div className="infoBox w-[48%]">
+                  <div className="infoBox w-[100%] md:w-[48%]">
                     <FormField
                       control={form.control}
                       name={"petNm"}
