@@ -9,37 +9,33 @@ import { DataType } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { msgType } from "@/lib/utils";
-
-export type tableType = {
-  revId: string;
-  revName: string;
-  revCom: string;
-  revDate: string;
-  hotelId: string;
-  revPeriod: string;
-  visitMethod: "car" | "walking";
-};
-
+import { TableType } from "@/lib/utils";
 function ReservationInfo() {
-  const [dataState, setData] = useState<tableType[]>([]);
+  const [dataState, setData] = useState<TableType[]>([]);
   const { id } = useParams() as { id: string };
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getData = async () => {
-    const data = await getAxiosData(`/api/myPage/${id}`);
+    try {
+      const data = await getAxiosData(`/api/myPage/${id}`);
 
-    const newArr = data?.data?.hotelList?.map((i: DataType) => {
-      return {
-        revId: i.reserveId,
-        revName: i.revName,
-        revCom: i.hotelInfo.ldgs_nm,
-        visitMethod: i.visitMethod,
-        revPeriod: `${i.startDate} ~ ${i.endDate}`,
-        revDate: i.revDate,
-        hotelId: i.hotelId,
-      };
-    });
+      const newArr = data?.data?.hotelList?.map((i: DataType) => {
+        return {
+          revId: i.reserveId,
+          revName: i.revName,
+          revCom: i.hotelInfo.ldgs_nm,
+          visitMethod: i.visitMethod,
+          revPeriod: `${i.startDate} ~ ${i.endDate}`,
+          revDate: i.revDate,
+          hotelId: i.hotelId,
+        };
+      });
 
-    setData(newArr);
+      setData(newArr);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const deleteFunc = async (reserveId: string) => {
@@ -60,13 +56,17 @@ function ReservationInfo() {
   }, []);
 
   return (
-    <div className="">
-      <div className="desktop-table hidden md:block">
+    <div>
+      <div className="desktop-table hidden lg:block">
         <MultiTable dataState={dataState} deleteFunc={deleteFunc} />
       </div>
 
-      <div className="mobile-card block md:hidden">
-        <MultiCard dataState={dataState} deleteFunc={deleteFunc} />
+      <div className="mobile-card lg:hidden">
+        <MultiCard
+          dataState={dataState}
+          deleteFunc={deleteFunc}
+          loading={loading}
+        />
       </div>
     </div>
   );
