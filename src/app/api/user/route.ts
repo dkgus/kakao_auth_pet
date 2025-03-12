@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
 import cloudinary from "@/lib/cloudinary";
 import { getDb } from "@/lib/db";
+import { MongoClient } from "mongodb";
+import { NextResponse } from "next/server";
 
 interface FormType {
   userId?: string;
@@ -54,6 +54,8 @@ export async function POST(req: Request) {
   if (img) {
     try {
       if (existingImgUrl) {
+        //이미 퍼블릭 아이디가 존재한다면
+
         const publicId = existingImgUrl
           .split("/")
           .slice(-2)

@@ -4,8 +4,8 @@ import MultiIcon from "@/components/icons/MultiIcon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
-import "./style.css";
 import { useEffect, useState } from "react";
+import "./style.css";
 
 const MenuIcon = (props: { type: string; toggleMenu: () => void }) => {
   const { toggleMenu, type } = props;
@@ -23,7 +23,7 @@ const MenuIcon = (props: { type: string; toggleMenu: () => void }) => {
         <Avatar onClick={toggleMenu}>
           <AvatarImage
             src={profile !== "" ? profile : "https://github.com/shadcn.png"}
-            alt="@shadcn"
+            alt="아바타 아이콘"
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>

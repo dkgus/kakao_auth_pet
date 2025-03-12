@@ -1,6 +1,5 @@
-import React from "react";
-
 import { faCheck, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useSession } from "next-auth/react";
 import MultiIcon from "../icons/MultiIcon";
 
 interface FileType {
@@ -15,6 +14,9 @@ interface FileType {
 }
 
 const CustomDropzone = ({ fileNm, setFileNm }: FileType) => {
+  console.log("fileNm", fileNm);
+  const { data: session } = useSession();
+  console.log("session", session);
   return (
     <>
       <div className="dropzoneBox flex flex-col">
@@ -37,7 +39,6 @@ const CustomDropzone = ({ fileNm, setFileNm }: FileType) => {
             id="uploadFile1"
             className="hidden"
             onChange={(e) => {
-              console.log("edfx", e);
               const data = e?.target?.files?.[0];
               if (!data) return;
 
@@ -65,66 +66,68 @@ const CustomDropzone = ({ fileNm, setFileNm }: FileType) => {
         </label>
       </div>
 
-      {fileNm.name !== "" && fileNm.type !== "" && (
-        <div className="w-[76%] mx-auto my-[3%] grid gap-4">
-          <div className="w-full grid gap-1">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <img
-                  src={fileNm?.preview ?? ""}
-                  alt="썸네일"
-                  className="w-10 h-10 object-cover rounded-lg shadow-md"
-                />
+      {!fileNm.type
+        ? null
+        : fileNm.type !== "" && (
+            <div className="w-[76%] mx-auto my-[3%] grid gap-4">
+              <div className="w-full grid gap-1">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={fileNm?.preview ?? ""}
+                      alt="썸네일"
+                      className="w-10 h-10 object-cover rounded-lg shadow-md"
+                    />
 
-                <div className="grid gap-1">
-                  <h4 className="text-gray-900 text-sm font-normal font-['Inter'] leading-snug">
-                    {fileNm.name}
-                  </h4>
-                  <h5 className="text-gray-400   text-xs font-normal font-['Inter'] leading-[18px]">
-                    {fileNm.loading ? (
-                      <div className="flex">
-                        <MultiIcon icon={faSpinner} color="red" />{" "}
-                        <div className="pl-1">업로드 중</div>
-                      </div>
-                    ) : (
-                      <div className="flex">
-                        <MultiIcon icon={faCheck} color="green" />{" "}
-                        <div className="pl-1">이미지 로드 완료</div>
-                      </div>
-                    )}
-                  </h5>
+                    <div className="grid gap-1">
+                      <h4 className="text-gray-900 text-sm font-normal font-['Inter'] leading-snug">
+                        {fileNm.name}
+                      </h4>
+                      <h5 className="text-gray-400   text-xs font-normal font-['Inter'] leading-[18px]">
+                        {fileNm.loading ? (
+                          <div className="flex">
+                            <MultiIcon icon={faSpinner} color="red" />{" "}
+                            <div className="pl-1">업로드 중</div>
+                          </div>
+                        ) : (
+                          <div className="flex">
+                            <MultiIcon icon={faCheck} color="green" />{" "}
+                            <div className="pl-1">이미지 로드 완료</div>
+                          </div>
+                        )}
+                      </h5>
+                    </div>
+                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    onClick={() => {
+                      setFileNm({
+                        name: "",
+                        type: "",
+                        preview: null,
+                        loading: true,
+                        file: null,
+                      });
+                    }}
+                  >
+                    <g id="Upload 3">
+                      <path
+                        id="icon"
+                        d="M15 9L12 12M12 12L9 15M12 12L9 9M12 12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                        stroke="#e31e24"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                      />
+                    </g>
+                  </svg>
                 </div>
               </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                onClick={() => {
-                  setFileNm({
-                    name: "",
-                    type: "",
-                    preview: null,
-                    loading: true,
-                    file: null,
-                  });
-                }}
-              >
-                <g id="Upload 3">
-                  <path
-                    id="icon"
-                    d="M15 9L12 12M12 12L9 15M12 12L9 9M12 12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                    stroke="#e31e24"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                  />
-                </g>
-              </svg>
             </div>
-          </div>
-        </div>
-      )}
+          )}
     </>
   );
 };

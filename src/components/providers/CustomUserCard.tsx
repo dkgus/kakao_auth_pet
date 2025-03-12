@@ -1,7 +1,4 @@
 "use client";
-import { useSession } from "next-auth/react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -12,6 +9,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useSession } from "next-auth/react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import MultiIcon from "../icons/MultiIcon";
 import { Textarea } from "../ui/textarea";
 import CustomDropzone from "./CustomDropzone";
+import CustomPreview from "./CustomPreview";
 
 const CustomUserCard = () => {
   const router = useRouter();
@@ -46,6 +47,7 @@ const CustomUserCard = () => {
   const memo = searchParams?.get("memo");
 
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
+  const [editImg, setEditImg] = useState<boolean>(false);
   const [fileNm, setFileNm] = useState<{
     name?: string;
     type?: string;
@@ -71,20 +73,46 @@ const CustomUserCard = () => {
     update();
   }, []);
 
-  const formSchema = z.object({
-    username: z.any(),
-    period: z.number(),
-    petNm: z.string().trim().min(1, "반려동물 이름을 입력해주세요."),
-    phone: z.string().trim().min(1, "전화번호를 입력해주세요."),
-    email: z
-      .string()
-      .trim()
-      .min(1, "이메일을 입력해주세요.")
-      .email("올바른 이메일 형식이 아닙니다."),
-    petType: z.string().trim().min(1, "반려동물 종류를 입력해주세요."),
-    memo: z.string().optional(),
-    file: z.instanceof(File, { message: "파일을 업로드해주세요." }),
-  });
+  useEffect(() => {
+    if (session?.user?.image === undefined) {
+      setEditImg(true);
+    }
+  }, [session]);
+
+  const formSchema = z
+    .object({
+      username: z.any(),
+      period: z.number(),
+      petNm: z.string().trim().min(1, "반려동물 이름을 입력해주세요."),
+      phone: z.string().trim().min(1, "전화번호를 입력해주세요."),
+      email: z
+        .string()
+        .trim()
+        .min(1, "이메일을 입력해주세요.")
+        .email("올바른 이메일 형식이 아닙니다."),
+      petType: z.string().trim().min(1, "반려동물 종류를 입력해주세요."),
+      memo: z.string().optional(),
+      file: z
+        .instanceof(File, { message: "파일을 업로드해주세요." })
+        .optional(),
+    })
+    .refine(
+      (data) => {
+        if (!editImg) {
+          // editImg가 false이면 무조건 통과
+          return true;
+        }
+        if (data.file) {
+          return true;
+        }
+        console.log("!!222");
+        return false;
+      },
+      {
+        message: "파일을 업로드해주세요.",
+        path: ["file"],
+      }
+    );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -96,6 +124,7 @@ const CustomUserCard = () => {
       petNm: pageType === "edit" ? petNm ?? "" : "",
       petType: pageType === "edit" ? petType ?? "" : "",
       memo: pageType === "edit" && memo === undefined ? "" : memo ?? "",
+      file: pageType === "edit" ? fileNm?.file ?? undefined : undefined,
     },
   });
 
@@ -151,7 +180,7 @@ const CustomUserCard = () => {
     </div>
   );
 
-  //const onError = (errors: any) => console.log("폼 에러:", errors);
+  const onError = (errors: any) => console.log("폼 에러:", errors);
 
   return (
     <div className="m-auto w-[100%] pt-3 md:pt-0">
@@ -162,10 +191,7 @@ const CustomUserCard = () => {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(
-                onSubmit
-                //, onError
-              )}
+              onSubmit={form.handleSubmit(onSubmit, onError)}
               className="space-y-8"
             >
               <ScrollArea className="h-[63vh] md:h-[60vh]">
@@ -265,27 +291,49 @@ const CustomUserCard = () => {
                 <TitleNm nm="팻 정보" />
 
                 <div className="petBox flex w-[100%] gap-[50px] flex-col-reverse md:flex-row">
-                  <FormField
-                    control={form.control}
-                    name="file"
-                    render={({ field }) => (
-                      <FormItem className="pb-10 w-[100%] md:w-[45%] ">
-                        <FormLabel className="pl-[13%]">
-                          * 반려동물 사진 업로드
-                        </FormLabel>
-                        <FormControl>
-                          <CustomDropzone
-                            fileNm={fileNm}
-                            setFileNm={(file) => {
-                              setFileNm(file);
-                              field.onChange(file.file);
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage className="pl-[13%]" />
-                      </FormItem>
-                    )}
-                  />
+                  {!editImg ? (
+                    <>
+                      <CustomPreview
+                        fileNm={fileNm}
+                        setEditImg={setEditImg}
+                        editImg={editImg}
+                      />
+                    </>
+                  ) : (
+                    <FormField
+                      control={form.control}
+                      name="file"
+                      render={({ field }) => (
+                        <FormItem className="pb-10 w-[100%] md:w-[45%] ">
+                          <FormLabel className="pl-[13%]">
+                            <div className="pl-[13%]">
+                              {" "}
+                              * 반려동물 사진 업로드
+                            </div>
+                          </FormLabel>
+                          <FormControl>
+                            <CustomDropzone
+                              fileNm={fileNm}
+                              setFileNm={(file) => {
+                                setFileNm(file);
+                                field.onChange(file.file);
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage className="pl-[13%]" />
+                          {session?.user?.image !== undefined &&
+                            !fileNm.file && (
+                              <div
+                                className="pl-[13%] text-[13px]"
+                                onClick={() => setEditImg(!editImg)}
+                              >
+                                이미지 수정 취소
+                              </div>
+                            )}
+                        </FormItem>
+                      )}
+                    />
+                  )}
 
                   <div className="infoBox w-[100%] md:w-[48%]">
                     <FormField
