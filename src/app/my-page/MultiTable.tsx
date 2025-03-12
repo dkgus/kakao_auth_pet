@@ -218,10 +218,8 @@ const MultiTable = (props: {
         <div className="text-[20px]">예약 리스트</div>
         <Input
           placeholder="예약 리스트를 조회해보세요!"
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
+          value={(table.getState().globalFilter as string) ?? ""}
+          onChange={(event) => table.setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
       </div>

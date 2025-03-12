@@ -3,8 +3,8 @@ import axios from "axios";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 
-import { NextResponse } from "next/server";
 import { imgURL } from "@/lib/constants";
+import { NextResponse } from "next/server";
 
 interface QueryType {
   pet_info_cn?: { $not: { $regex: string } };
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
       .toArray();
 
     const { data: images } = await axios.get(
-      `${imgURL}?page=${page}&limit=${limit}&w=500&h=120&fit=crop`
+      `${imgURL}?page=${page}&limit=${limit}&w=500&h=120&fit=crop&q=50&fm=webp`
     );
 
     const updatedHotels = await Promise.all(

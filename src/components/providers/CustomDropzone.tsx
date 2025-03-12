@@ -1,5 +1,5 @@
 import { faCheck, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 import MultiIcon from "../icons/MultiIcon";
 
 interface FileType {
@@ -14,9 +14,6 @@ interface FileType {
 }
 
 const CustomDropzone = ({ fileNm, setFileNm }: FileType) => {
-  console.log("fileNm", fileNm);
-  const { data: session } = useSession();
-  console.log("session", session);
   return (
     <>
       <div className="dropzoneBox flex flex-col">
@@ -45,7 +42,7 @@ const CustomDropzone = ({ fileNm, setFileNm }: FileType) => {
               if (
                 !["image/png", "image/jpg", "image/jpeg"].includes(data.type)
               ) {
-                alert("파일 타입오류");
+                toast("파일 타입오류");
                 return;
               }
 

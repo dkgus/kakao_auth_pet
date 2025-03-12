@@ -99,13 +99,11 @@ const CustomUserCard = () => {
     .refine(
       (data) => {
         if (!editImg) {
-          // editImg가 false이면 무조건 통과
           return true;
         }
         if (data.file) {
           return true;
         }
-        console.log("!!222");
         return false;
       },
       {
@@ -180,7 +178,7 @@ const CustomUserCard = () => {
     </div>
   );
 
-  const onError = (errors: any) => console.log("폼 에러:", errors);
+  //const onError = (errors: any) => console.log("폼 에러:", errors);
 
   return (
     <div className="m-auto w-[100%] pt-3 md:pt-0">
@@ -191,7 +189,10 @@ const CustomUserCard = () => {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit, onError)}
+              onSubmit={form.handleSubmit(
+                onSubmit
+                //onError
+              )}
               className="space-y-8"
             >
               <ScrollArea className="h-[63vh] md:h-[60vh]">
