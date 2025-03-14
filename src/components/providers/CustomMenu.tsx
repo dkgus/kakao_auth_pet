@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useState } from "react";
 
 import MenuIcon from "@/components/icons/MenuIcon";
 
@@ -23,7 +23,9 @@ const DropdownMenu = (props: {
       event: () => router.push("/event"),
       hotel: () => router.push("/hotel"),
       myPage: () => router.push(`/my-page/${data?.userId}`),
-      logout: async () => await signOut(),
+      logout: async () => {
+        await signOut({ callbackUrl: "/" });
+      },
     };
 
     const action = actions[option];
@@ -50,7 +52,13 @@ const DropdownMenu = (props: {
           >
             {menuList?.map((item, idx) => (
               <div key={idx}>
-                {item.key === "event" ? (
+                <button
+                  className={btnClass}
+                  onClick={() => handleOptionClick(item.key)}
+                >
+                  {item.value}
+                </button>
+                {/* {item.key === "event" ? (
                   <>
                     {data ? (
                       <button
@@ -68,7 +76,7 @@ const DropdownMenu = (props: {
                   >
                     {item.value}
                   </button>
-                )}
+                )} */}
               </div>
             ))}
           </div>

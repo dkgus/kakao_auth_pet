@@ -18,8 +18,8 @@ const LoginButton = () => {
         <CustomMenu
           type="r_down"
           menuList={[
-            { key: "logout", value: "LOGOUT" },
             { key: "myPage", value: "마이 페이지" },
+            { key: "logout", value: "LOGOUT" },
           ]}
         />
       )}
