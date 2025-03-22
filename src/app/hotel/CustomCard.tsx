@@ -22,13 +22,11 @@ const CustomCard = (props: {
 }) => {
   const { item } = props;
   const router = useRouter();
+  const option = item.pet_info_cn;
+  const featItems = JSON.parse(option.replace(/'/g, '"'));
 
-  const featItems = item.pet_info_cn
-    .replace(/[\[\]']/g, "")
-    .split(",")
-    .map((item) => item.trim());
   return (
-    <Card className="h-[260px]">
+    <Card className="h-[280px] md:h-[260px]">
       <CardHeader className="p-0 m-0">
         <Image
           priority
@@ -50,15 +48,17 @@ const CustomCard = (props: {
       </CardContent>
       <CardFooter>
         <div className="w-[100%]">
-          <div
-            className="min-h-[48px] max-h-[48px] md:min-h-[35px] md:max-h-[35px]"
-            //style={{ minHeight: "35px", maxHeight: "35px" }}
-          >
-            {featItems.slice(0, 3).map((item, idx) => (
+          <div className="min-h-[48px] max-h-[48px] md:min-h-[35px] md:max-h-[35px] ">
+            {/* 태그 뱃지 */}
+            {featItems.slice(0, 3).map((item: string, idx: number) => (
               <span key={idx}>
-                <Badge className={`${mainBgColor} mr-[2px]`}>{item}</Badge>
+                <Badge className={`${mainBgColor} mr-[2px]`}>
+                  <span className="text-[9px] md:text-[8px]">{item}</span>
+                </Badge>
               </span>
             ))}
+
+            {/* 더보기 뱃지 */}
             {featItems.length > 3 && (
               <span className="pl-1">
                 <Badge
@@ -71,7 +71,7 @@ const CustomCard = (props: {
           </div>
           <div
             onClick={() => router.push(`/hotel/${item._id}?type=create`)}
-            className="hover:underline text-sm text-[#000] font-extrabold pt-1 md:pt-3 text-[12px] text-right"
+            className="hover:underline text-sm text-[#000] font-extrabold pt-7 md:pt-5 text-[12px] text-right"
           >
             예약하기
           </div>

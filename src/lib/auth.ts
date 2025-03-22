@@ -11,6 +11,8 @@ const clientPromise = MongoClient.connect(process.env.MONGODB_URI || "");
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
+    refreshToken?: string;
+    token?: Object;
     userId?: string;
     user?: {
       name?: string | null;
@@ -41,6 +43,7 @@ export const authOptions: NextAuthOptions = {
     // }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async signIn({ user }) {
       const client = await clientPromise;
@@ -57,11 +60,18 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
+    async redirect({ url, baseUrl }) {
+      const pathname = new URL(url, baseUrl).pathname;
+      console.log("pathname", pathname);
+      return `${pathname}`;
+    },
+
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
       }
+
       return token;
     },
 
@@ -70,6 +80,7 @@ export const authOptions: NextAuthOptions = {
       const db = client.db("User");
       const user = await db.collection("User").findOne({ id: token.sub });
       session.userId = token.sub;
+      session.token = token;
       session.user = {
         ...session.user,
         petNm: user?.petNm,
@@ -80,6 +91,8 @@ export const authOptions: NextAuthOptions = {
         image: user?.imgUrl,
         email: user?.email,
       };
+
+      //session.refreshToken = token.refreshToken as string;
       return session;
     },
   },

@@ -32,11 +32,8 @@ const DetailCard = () => {
   useEffect(() => {
     const data = hotelData.pet_info_cn;
     if (!data) return;
-    const options = data
-      .split("")
-      .filter((v, idx) => idx !== 0 && idx !== data.length - 1 && v !== "'")
-      .join("")
-      .split(",");
+    const options = JSON.parse(data.replace(/'/g, '"'));
+
     setFeat(options);
   }, [hotelData]);
 
