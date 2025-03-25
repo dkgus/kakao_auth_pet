@@ -24,6 +24,7 @@ const MenuIcon = (props: { type: string; toggleMenu: () => void }) => {
           <AvatarImage
             src={profile !== "" ? profile : "https://github.com/shadcn.png"}
             alt="아바타 아이콘"
+            className="w-auto h-auto max-w-full max-h-full object-cover"
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
