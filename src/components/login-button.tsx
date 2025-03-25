@@ -24,9 +24,9 @@ const LoginButton = () => {
         />
       )}
 
-      <a onClick={onClick} className="text-sm text-white">
+      <div onClick={onClick} className="text-sm text-white">
         {!data && "로그인"}
-      </a>
+      </div>
     </div>
   );
 };
