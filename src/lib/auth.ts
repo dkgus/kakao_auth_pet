@@ -12,7 +12,6 @@ declare module "next-auth" {
   interface Session {
     accessToken?: string;
     refreshToken?: string;
-    token?: Object;
     userId?: string;
     user?: {
       name?: string | null;
@@ -62,7 +61,6 @@ export const authOptions: NextAuthOptions = {
 
     async redirect({ url, baseUrl }) {
       const pathname = new URL(url, baseUrl).pathname;
-      console.log("pathname", pathname);
       return `${pathname}`;
     },
 
@@ -80,7 +78,6 @@ export const authOptions: NextAuthOptions = {
       const db = client.db("User");
       const user = await db.collection("User").findOne({ id: token.sub });
       session.userId = token.sub;
-      session.token = token;
       session.user = {
         ...session.user,
         petNm: user?.petNm,

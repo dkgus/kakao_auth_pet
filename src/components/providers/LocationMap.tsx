@@ -1,7 +1,7 @@
 "use client";
 
 import { getAxiosData } from "@/lib/axiosData";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 import { weatherURL } from "@/lib/constants";
 import {
@@ -54,18 +54,17 @@ const LocationMap = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const script: HTMLScriptElement = document.createElement("script");
-    script.async = true;
+  useLayoutEffect(() => {
+    const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services&autoload=false`;
-    document.head.appendChild(script);
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
 
-    script.addEventListener("load", () => {
-      setScriptLoad(true);
-    });
+    script.onload = () => setScriptLoad(true);
 
     return () => {
-      document.head.removeChild(script);
+      document.body.removeChild(script);
     };
   }, [apiKey]);
 
@@ -81,7 +80,7 @@ const LocationMap = () => {
 
   const getKRaddress = async (lat: number, lng: number) => {
     const KAKAO_API_KEY = restKey;
-    const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`;
+    const url = `//dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`;
 
     const response = await fetch(url, {
       headers: {

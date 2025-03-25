@@ -2,33 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
+  const response = NextResponse.next();
+  response.headers.set("Cache-Control", "no-store, must-revalidate");
   if (pathname === "/hotel") {
-    return NextResponse.next();
+    return response;
   }
 
   const token = await getToken({ req: request });
 
   if (token) {
-    return NextResponse.next();
+    return response;
   }
 
-  const callbackUrl = encodeURIComponent(`${pathname}${search}`);
-  const kakaoAuthUrl = new URL(
-    "/api/auth/callback/kakao",
-
-    request.url
-  );
+  const kakaoAuthUrl = new URL("/api/auth/callback/kakao", request.url);
   kakaoAuthUrl.searchParams.append(
     "client_id",
     process.env.KAKAO_CLIENT_ID ?? ""
   );
-
-  // kakaoAuthUrl.searchParams.append(
-  //   "redirect_uri",
-  //   `${request.nextUrl.origin}/api/auth/callback/kakao`
-  // );
   kakaoAuthUrl.searchParams.append("response_type", "code");
 
   return NextResponse.redirect(kakaoAuthUrl);
