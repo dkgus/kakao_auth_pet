@@ -42,7 +42,7 @@ const CustomCard = (props: {
         <CardTitle className="pt-1 text-[14px] md:text-[17px]">
           {item.ldgs_nm}
         </CardTitle>
-        <div className="text-[9.9px] md:text-[13px] text-[gray]">
+        <div className="text-[10px] md:text-[13px] text-gray-700">
           위치: {item.ldgs_addr}
         </div>
       </CardContent>
@@ -62,7 +62,7 @@ const CustomCard = (props: {
             {featItems.length > 3 && (
               <span className="pl-1">
                 <Badge
-                  className={`${mainBgColor} text-[8px] md:text-[10px] text-[#000] hover:text-[#fff]`}
+                  className={`${mainBgColor} text-[8px] md:text-[10px] text-white hover:text-gray-200`}
                 >
                   + {featItems.length - 3}
                 </Badge>
