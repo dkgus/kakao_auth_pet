@@ -24,15 +24,15 @@ const RadioMenu = (props: {
       {type.map((item, idx) => (
         <div key={idx}>
           <MenubarMenu>
-            <MenubarTrigger>
-              <div>
-                <MultiIcon
-                  icon={iconType[item]}
-                  onClick={() => {
-                    if (item === "hospital") getHospital();
-                    if (item === "hotel") getHotel();
-                  }}
-                />
+            <MenubarTrigger asChild>
+              <div
+                onClick={() => {
+                  if (item === "hospital") getHospital();
+                  if (item === "hotel") getHotel();
+                }}
+                className="flex flex-col items-center cursor-pointer"
+              >
+                <MultiIcon icon={iconType[item]} />
                 <div className="text-[10px]">{idx === 0 ? "병원" : "호텔"}</div>
               </div>
             </MenubarTrigger>

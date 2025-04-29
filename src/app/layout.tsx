@@ -25,6 +25,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Oh My Pet",
   description: "반려동물 올케어 서비스",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
