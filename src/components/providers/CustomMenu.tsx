@@ -19,7 +19,9 @@ const DropdownMenu = (props: {
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleOptionClick = async (option: string) => {
+    console.log("option", option);
     const actions: { [key: string]: () => Promise<void> | void } = {
+      qna: () => router.push("/qna"),
       event: () => router.push("/event"),
       hotel: () => router.push("/hotel"),
       myPage: () => router.push(`/my-page/${data?.userId}`),

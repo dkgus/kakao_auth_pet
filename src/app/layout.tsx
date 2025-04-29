@@ -46,8 +46,8 @@ export default function RootLayout({
                 type="l_down"
                 menuList={[
                   // { key: "event", value: "이벤트 페이지" },
-                  { key: "community", value: "소통 게시판" },
                   { key: "hotel", value: "반려동물 호텔 예약" },
+                  { key: "qna", value: "Q&A 게시판" },
                 ]}
               />
             </div>
