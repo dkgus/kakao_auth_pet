@@ -32,10 +32,11 @@ const CustomCard = (props: {
           priority
           src={item.imageUrl}
           alt="@hotelImg"
-          width={800}
+          width={400}
           height={120}
-          className="rounded-t-lg"
-          style={{ objectFit: "cover", maxHeight: "120px" }}
+          className="rounded-t-lg w-full"
+          sizes="(max-width: 768px) 100vw, 400px"
+          style={{ objectFit: "cover", height: "120px" }}
         />
       </CardHeader>
       <CardContent className="py-1 m-0">
