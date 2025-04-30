@@ -5,7 +5,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const response = NextResponse.next();
-  response.headers.set("Cache-Control", "no-store, must-revalidate");
+  // response.headers.set("Cache-Control", "no-store, must-revalidate");
+  response.headers.set("Cache-Control", "public, max-age=86400");
   if (pathname === "/hotel") {
     return response;
   }
