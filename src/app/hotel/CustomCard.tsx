@@ -54,7 +54,9 @@ const CustomCard = (props: {
             {featItems.slice(0, 3).map((item: string, idx: number) => (
               <span key={idx}>
                 <Badge className={`${mainBgColor} mr-[2px]`}>
-                  <span className="text-[9px] md:text-[8px]">{item}</span>
+                  <span className="text-[9px] text-black md:text-[8px] hover:text-[#fff]">
+                    {item}
+                  </span>
                 </Badge>
               </span>
             ))}
@@ -63,7 +65,7 @@ const CustomCard = (props: {
             {featItems.length > 3 && (
               <span className="pl-1">
                 <Badge
-                  className={`${mainBgColor} text-black text-[8px] md:text-[10px] text-white hover:text-gray-200`}
+                  className={`${mainBgColor} text-[8px] text-black md:text-[10px] hover:text-[#fff]`}
                 >
                   + {featItems.length - 3}
                 </Badge>
@@ -72,7 +74,7 @@ const CustomCard = (props: {
           </div>
           <div
             onClick={() => router.push(`/hotel/${item._id}?type=create`)}
-            className="hover:underline text-sm text-[#000] font-extrabold pt-7 md:pt-5 text-[12px] text-right"
+            className="hover:underline text-sm text-black font-extrabold pt-7 md:pt-5 text-[12px] text-right hover:text-[#fff]"
           >
             예약하기
           </div>
