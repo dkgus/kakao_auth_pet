@@ -63,7 +63,7 @@ const CustomCard = (props: {
             {featItems.length > 3 && (
               <span className="pl-1">
                 <Badge
-                  className={`${mainBgColor} text-[8px] md:text-[10px] text-white hover:text-gray-200`}
+                  className={`${mainBgColor} text-black text-[8px] md:text-[10px] text-white hover:text-gray-200`}
                 >
                   + {featItems.length - 3}
                 </Badge>
