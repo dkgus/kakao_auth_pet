@@ -17,7 +17,8 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const kakaoAuthUrl = new URL("/api/auth/callback/kakao", request.url);
+  const kakaoAuthUrl = new URL("/api/auth/signin", request.url);
+  //https://kakao-auth-pet.vercel.app/api/auth/signin
   kakaoAuthUrl.searchParams.append(
     "client_id",
     process.env.KAKAO_CLIENT_ID ?? ""
